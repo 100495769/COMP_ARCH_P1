@@ -1,2 +1,2 @@
-add_executable(imtool−soa main.cpp)
-target_link_libraries (imtool−soa imgsoa common)
+add_executable(imtool-soa imtool-soa.cpp)
+target_link_libraries (imtool-soa imgsoa common)
