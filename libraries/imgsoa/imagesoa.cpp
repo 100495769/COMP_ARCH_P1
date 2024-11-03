@@ -31,7 +31,6 @@ void ImageSOA::cargar_imagen(std::string& path_imagen) {
     std::cerr << "Error al abrir la imagen: " << path_imagen << "\n";
     return;
   }
-
   std::string ancho_str, alto_str, max_intensidad_str;
   archivo >> numero_magico >> ancho_str >> alto_str >> max_intensidad_str ; // cogemos todos los datos ignorando saltos de pagina y espacios en blanco
   ancho = std::stoi(ancho_str);
@@ -42,15 +41,26 @@ void ImageSOA::cargar_imagen(std::string& path_imagen) {
     std::cerr << "Los datos de la imagen no son validos \n";
     exit(1);
   }
-
   archivo.ignore();  // ignoramos el salto de pagina que hay despues del maximo de intensidad.
+  // ahora gestionamos la matriz de pixeles: ponemos cada array al tamaño que corresponda
+  int tamano_matriz = alto * ancho;
+  red.resize(tamano_matriz);
+  green.resize(tamano_matriz);
+  blue.resize(tamano_matriz);
 
   // Leemos los bytes de los pixeles de la imagen y los metemos en su vector correspondiente
-  if (max_intensidad <= 255) {  // hay 1B por cada valor de cada vector RGB
-    // usamos reinterpret_cast solo para las funciones read.
-    // CAMBIARLOOOO: archivo.read(reinterpret_cast<char*>)//----___----------------------------------------- !!!!
+  for (int i = 0; i < tamano_matriz; i++) {// usamos reinterpret_cast solo para las funciones read: de esta forma meteremos 8bits u 16 bits dependiendo de la imagen
+    if (max_intensidad <= 255) {  // hay 1B (usamos el tipo uint8_t) por cada valor de cada vector RGB
+      archivo.read(reinterpret_cast<char*>(&red[i]), sizeof(uint8_t));
+      archivo.read(reinterpret_cast<char*>(&green[i]), sizeof(uint8_t));
+      archivo.read(reinterpret_cast<char*>(&blue[i]), sizeof(uint8_t));
+    }
+    else {  // hay 2B (usamos el tipo uint16_t) por cada valor de cada vector RGB
+      archivo.read(reinterpret_cast<char*>(&red[i]), sizeof(uint16_t));
+      archivo.read(reinterpret_cast<char*>(&green[i]), sizeof(uint16_t));
+      archivo.read(reinterpret_cast<char*>(&blue[i]), sizeof(uint16_t));
+    }
   }
-
 }
 
 
