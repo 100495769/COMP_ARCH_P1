@@ -62,11 +62,9 @@ void ImageSOA::cargar_imagen(std::string& path_imagen) {    // Esta función abr
   }
 }
 
-
 void ImageSOA::info(){    // Esta funcion devuelve los metadatos de la imagen perteneciente a su clase
   std::cout << "Magic number: " << numero_magico << "\n" << "Ancho: " << ancho << "\n" << "Alto: " << alto << "\n" << "Maximo intensidad: " << max_intensidad << "\n";
 }
-
 
 void ImageSOA::maxlevel(int nueva_intensidad) {     // Esta función escala la intensidad de la imagen a la nueva intensidad dada. Tiene en cuenta los distintos tipos de RGB
 
