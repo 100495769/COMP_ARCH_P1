@@ -5,8 +5,7 @@
 #include "../libraries/common/progargs.hpp"
 #include <iostream>
 #include <string>
-#include <array>
-#include <iostream>
+
 auto main(int argc, char* argv[]) -> int {    // cogemos primero los argumentos de entrada y los validamos con el validador de progargs
   std::vector<std::string> argumentos(argv, argv + argc);
 

@@ -99,9 +99,9 @@ void ImageSOA::info(){    // Esta funcion devuelve los metadatos de la imagen pe
 void ImageSOA::maxlevel(int nueva_intensidad) {     // Esta función escala la intensidad de la imagen a la nueva intensidad dada
   // realmente en estas funciones no vamos a gestionar si la intensidad es mayor o menor que 255. Eso lo gestionamos al guardarlo
   for (size_t i = 0; i < red.size(); i++) {   // recorremos los vectores de pixeles (todos tienen el mismo tamaño por lo que hago solo un bucle)
-    int nuevo_valor_red = red[i] * (nueva_intensidad / max_intensidad);
-    int nuevo_valor_green = green[i] * (nueva_intensidad / max_intensidad);
-    int nuevo_valor_blue = blue[i] * (nueva_intensidad / max_intensidad);
+    int nuevo_valor_red = (red[i] * nueva_intensidad) / max_intensidad;
+    int nuevo_valor_green = (green[i] * nueva_intensidad) / max_intensidad;
+    int nuevo_valor_blue = (blue[i] * nueva_intensidad) / max_intensidad;
     red[i] = nuevo_valor_red;
     green[i] = nuevo_valor_green;
     blue[i] = nuevo_valor_blue;

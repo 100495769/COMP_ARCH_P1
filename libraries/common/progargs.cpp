@@ -6,8 +6,8 @@
 
 auto validate_parameters(int argc, std::vector<std::string> argumentos) -> bool {
   const std::string& operacion = argumentos[3];
-  std::cout << "Argc: " << argc << "\n" << argumentos[0] << "\n" << argumentos[1] << "\n" << argumentos[2] << "\n" << argumentos[3] << "\n";
 
+  //std::cout << "Argc: " << argc << "\n" << argumentos[0] << "\n" << argumentos[1] << "\n" << argumentos[2] << "\n" << argumentos[3] << "\n";
   // int nueva_intensidad, nuevo_ancho, nuevo_alto;
   //// ICIAR METE VALORES TUYOS SI LO NECESITAS !!
 
