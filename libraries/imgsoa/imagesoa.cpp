@@ -5,6 +5,7 @@
 #include <string>
 #include <fstream>
 #include <vector>
+#include <cstdint>
 #include "imagesoa.hpp"
 
 ImageSOA::ImageSOA() = default;
