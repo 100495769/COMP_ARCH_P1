@@ -7,6 +7,6 @@ add_executable(ftest-aos
 # Library dependencies
 target_link_libraries (ftest-aos
         PRIVATE
-        imtool-aos
         GTest::gtest_main
         Microsoft.GSL::GSL)
+add_dependencies(ftest-aos imtool-aos)

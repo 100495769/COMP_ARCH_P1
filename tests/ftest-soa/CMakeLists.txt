@@ -7,6 +7,7 @@ add_executable(ftest-soa
 # Library dependencies
 target_link_libraries (ftest-soa
         PRIVATE
-        imtool−soa
         GTest::gtest_main
         Microsoft.GSL::GSL)
+
+add_dependencies(ftest-soa imtool-soa)
