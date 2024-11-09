@@ -1,8 +1,9 @@
 #ifndef COMP_ARCH_LAB1_PROGARGS_HPP
 #define COMP_ARCH_LAB1_PROGARGS_HPP
+#include <vector>
+#include <string>
 
 // Aquí irían las declaraciones de funciones, clases, etc.
-bool validate_parameters(int argc, char *argv[]);
-
+auto validate_parameters(int argc, std::vector<std::string> argumentos) -> bool;
 
 #endif  // COMP_ARCH_LAB1_PROGARGS_HPP

@@ -5,9 +5,12 @@
 #include "libraries/common/progargs.hpp"
 #include <iostream>
 #include <string>
+#include <array>
 
 auto main(int argc, char* argv[]) -> int {    // cogemos primero los argumentos de entrada y los validamos con el validador de progargs
-  if (!validate_parameters(argc, argv)) {
+  std::vector<std::string> argumentos(argv, argv + argc);
+
+  if (!validate_parameters(argc, argumentos)) {
     return 1; // si los parametros no son validos, terminamos
   }
 
@@ -22,9 +25,9 @@ auto main(int argc, char* argv[]) -> int {    // cogemos primero los argumentos 
   if (operacion == "info"){   // mostramos la información de los metadatos
     mi_imagen.info(); }
 
-  /*else if (operacion == "maxlevel") {  // la posicion 4 del vector de argumentos es la nueva intensidad. lo pasamos a entero
+  else if (operacion == "maxlevel") {  // la posicion 4 del vector de argumentos es la nueva intensidad. lo pasamos a entero
     mi_imagen.maxlevel(std::stoi(argv[3])); }
-
+  /*
   else if (operacion == "resize") {   // primero obtenemos los parametros extra: [4] es ancho, [5] es alto
     mi_imagen.resize(std::stoi(argv[4]), std::stoi(argv[5])); }
 
@@ -35,6 +38,7 @@ auto main(int argc, char* argv[]) -> int {    // cogemos primero los argumentos 
     std::cerr << "Error: Operacion no valida\n";
     return 1; }
 
-  //mi_imagen.guardar_imagen(salida_path);  // guardamos la imagen con los cambios realizados
+  mi_imagen.guardar_imagen(salida_path);  // guardamos la imagen con los cambios realizados
   return 0;
 }
+

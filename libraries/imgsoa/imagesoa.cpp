@@ -65,16 +65,49 @@ void ImageSOA::cargar_imagen(std::string& path_imagen) {    // Esta función abr
   }
 }
 
+void ImageSOA::guardar_imagen(std::string& path_salida) {    // Esta función guarda la imagen en el path dado.
+  std::ofstream archivo(path_salida, std::ios::binary);  // lo ponemos en binario para escribir bytes
+
+  if (!archivo.is_open()) {   // salimos de la ejecucion si hay errores
+    std::cerr <<"Error: No se puede abrir el archivo dado en el path: " << path_salida << "\n";
+    exit(1);
+  }
+  // escribimos los metadatos separados por espacios (salto de linea para el numero magico y la intensidad)
+  archivo << numero_magico << "\n" << ancho << " " << alto  << " " << max_intensidad << "\n";
+
+  // ahora gestionamos la escritura de la matriz de pixeles dependiendo de su intensidad maxima
+  for (size_t i = 0; i < red.size(); i++) {
+    if(max_intensidad <= 255) {  // escribimos 1B (usamos el tipo uint8_t) para cada valor de cada vector
+      archivo.write(reinterpret_cast<char*>(&red[i]), sizeof(uint8_t));
+      archivo.write(reinterpret_cast<char*>(&green[i]), sizeof(uint8_t));
+      archivo.write(reinterpret_cast<char*>(&blue[i]), sizeof(uint8_t));
+    }
+    else {   // escribimos 2B (usamos el tipo uint16_t) para cada valor de cada vector
+      archivo.write(reinterpret_cast<char*>(&red[i]), sizeof(uint16_t));
+      archivo.write(reinterpret_cast<char*>(&green[i]), sizeof(uint16_t));
+      archivo.write(reinterpret_cast<char*>(&blue[i]), sizeof(uint16_t));
+    }
+  }
+  archivo.close();
+}
+
 void ImageSOA::info(){    // Esta funcion devuelve los metadatos de la imagen perteneciente a su clase
   std::cout << "Magic number: " << numero_magico << "\n" << "Ancho: " << ancho << "\n" << "Alto: " << alto << "\n" << "Maximo intensidad: " << max_intensidad << "\n";
 }
-/*
-void ImageSOA::maxlevel(int nueva_intensidad) {     // Esta función escala la intensidad de la imagen a la nueva intensidad dada. Tiene en cuenta los distintos tipos de RGB
 
-
+void ImageSOA::maxlevel(int nueva_intensidad) {     // Esta función escala la intensidad de la imagen a la nueva intensidad dada
+  // realmente en estas funciones no vamos a gestionar si la intensidad es mayor o menor que 255. Eso lo gestionamos al guardarlo
+  for (size_t i = 0; i < red.size(); i++) {   // recorremos los vectores de pixeles (todos tienen el mismo tamaño por lo que hago solo un bucle)
+    int nuevo_valor_red = red[i] * (nueva_intensidad / max_intensidad);
+    int nuevo_valor_green = green[i] * (nueva_intensidad / max_intensidad);
+    int nuevo_valor_blue = blue[i] * (nueva_intensidad / max_intensidad);
+    red[i] = nuevo_valor_red;
+    green[i] = nuevo_valor_green;
+    blue[i] = nuevo_valor_blue;
+  }
 }
 
-
+/*
 void ImageSOA::resize(int nuevo_ancho, int nuevo_alto) {      // Esta función escala el tamaño de la imagen a los nuevos valores de ancho y alto dado.
 
 }
