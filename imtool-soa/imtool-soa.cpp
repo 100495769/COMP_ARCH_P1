@@ -1,8 +1,8 @@
 //
 // Created by sergio on 7/10/24.
 //
-#include "libraries/imgsoa/imagesoa.hpp"
-#include "libraries/common/progargs.hpp"
+#include "../libraries/imgsoa/imagesoa.hpp"
+#include "../libraries/common/progargs.hpp"
 #include <iostream>
 #include <string>
 #include <array>
