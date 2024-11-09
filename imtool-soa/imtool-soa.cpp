@@ -6,7 +6,7 @@
 #include <iostream>
 #include <string>
 
-int main(int argc, char* argv[]) {    // cogemos primero los argumentos de entrada y los validamos con el validador de progargs
+auto main(int argc, char* argv[]) -> int {    // cogemos primero los argumentos de entrada y los validamos con el validador de progargs
   if (!validate_parameters(argc, argv)) {
     return 1; // si los parametros no son validos, terminamos
   }
@@ -22,7 +22,7 @@ int main(int argc, char* argv[]) {    // cogemos primero los argumentos de entra
   if (operacion == "info"){   // mostramos la información de los metadatos
     mi_imagen.info(); }
 
-  else if (operacion == "maxlevel") {  // la posicion 4 del vector de argumentos es la nueva intensidad. lo pasamos a entero
+  /*else if (operacion == "maxlevel") {  // la posicion 4 del vector de argumentos es la nueva intensidad. lo pasamos a entero
     mi_imagen.maxlevel(std::stoi(argv[3])); }
 
   else if (operacion == "resize") {   // primero obtenemos los parametros extra: [4] es ancho, [5] es alto
@@ -30,11 +30,11 @@ int main(int argc, char* argv[]) {    // cogemos primero los argumentos de entra
 
   // ICIAR :  4) Elimiacion de colores menos frecuentes
   // ICIAR :  5) Comprimir
-
+  */
   else{  // Cualquier otra cosa genera un error
     std::cerr << "Error: Operacion no valida\n";
     return 1; }
 
-  mi_imagen.guardar_imagen(salida_path);  // guardamos la imagen con los cambios realizados
+  //mi_imagen.guardar_imagen(salida_path);  // guardamos la imagen con los cambios realizados
   return 0;
 }

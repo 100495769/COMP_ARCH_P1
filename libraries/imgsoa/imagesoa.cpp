@@ -9,7 +9,7 @@
 
 ImageSOA::ImageSOA() = default;
 
-bool ImageSOA::verificar_datos() {
+auto ImageSOA::verificar_datos() -> bool {
   // Esta función verifica que los datos de la imagen correspondan con lo que queremos.
   if (numero_magico != "P6") {
     std::cerr << "Numero magico no valido: Se espera P6 \n";
@@ -42,13 +42,16 @@ void ImageSOA::cargar_imagen(std::string& path_imagen) {    // Esta función abr
   }
   archivo.ignore();  // ignoramos el salto de pagina que hay despues del maximo de intensidad.
   // ahora gestionamos la matriz de pixeles: ponemos cada array al tamaño que corresponda
+  // usaremos static_casts para que no haya problemas en los cambios de int a size_t
   int tamano_matriz = alto * ancho;
-  red.resize(tamano_matriz);
-  green.resize(tamano_matriz);
-  blue.resize(tamano_matriz);
+  auto tamano_matriz_unsigned = static_cast<size_t>(tamano_matriz);
+  red.resize(tamano_matriz_unsigned);
+  //green.resize(static_cast<std::vector<int>::size_type>(tamano_matriz));
+  green.resize(tamano_matriz_unsigned);
+  blue.resize(tamano_matriz_unsigned);
 
   // Leemos los bytes de los pixeles de la imagen y los metemos en su vector correspondiente
-  for (int i = 0; i < tamano_matriz; i++) {// usamos reinterpret_cast solo para las funciones read: de esta forma meteremos 8bits u 16 bits dependiendo de la imagen
+  for (size_t i = 0; i < tamano_matriz_unsigned; i++) {// usamos reinterpret_cast solo para las funciones read: de esta forma meteremos 8bits u 16 bits dependiendo de la imagen
     if (max_intensidad <= 255) {  // hay 1B (usamos el tipo uint8_t) por cada valor de cada vector RGB
       archivo.read(reinterpret_cast<char*>(&red[i]), sizeof(uint8_t));
       archivo.read(reinterpret_cast<char*>(&green[i]), sizeof(uint8_t));
@@ -65,7 +68,7 @@ void ImageSOA::cargar_imagen(std::string& path_imagen) {    // Esta función abr
 void ImageSOA::info(){    // Esta funcion devuelve los metadatos de la imagen perteneciente a su clase
   std::cout << "Magic number: " << numero_magico << "\n" << "Ancho: " << ancho << "\n" << "Alto: " << alto << "\n" << "Maximo intensidad: " << max_intensidad << "\n";
 }
-
+/*
 void ImageSOA::maxlevel(int nueva_intensidad) {     // Esta función escala la intensidad de la imagen a la nueva intensidad dada. Tiene en cuenta los distintos tipos de RGB
 
 
@@ -75,4 +78,4 @@ void ImageSOA::maxlevel(int nueva_intensidad) {     // Esta función escala la i
 void ImageSOA::resize(int nuevo_ancho, int nuevo_alto) {      // Esta función escala el tamaño de la imagen a los nuevos valores de ancho y alto dado.
 
 }
-
+*/

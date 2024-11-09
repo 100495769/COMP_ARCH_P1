@@ -21,15 +21,15 @@ class ImageSOA {
     ImageSOA();
     // Definimos los métodos:
     void info();  // 1) Informacion de los metadatos
-    void maxlevel(int nueva_intensidad);  // 2) Escalado de intensidad
-    void resize(int nuevo_ancho, int nuevo_alto);  // 3) Escalado de tamaño
+    //void maxlevel(int nueva_intensidad);  // 2) Escalado de intensidad
+    //void resize(int nuevo_ancho, int nuevo_alto);  // 3) Escalado de tamaño
     // ICIAR :  4) Elimiacion de colores menos frecuentes
     // ICIAR :  5) Comprimir
 
     // Declaramos dos metodos para cargar y guardar la imagen desde el path del archivo
     void cargar_imagen(std::string & path_imagen);
-    void guardar_imagen(std::string & path_imagen) const;  // ponemos el cost para que no se modifique nigun miembro de la clase
-    bool verificar_datos();
+    //void guardar_imagen(std::string & path_imagen) const;  // ponemos el cost para que no se modifique nigun miembro de la clase
+    auto verificar_datos() -> bool;
 };
 
 
