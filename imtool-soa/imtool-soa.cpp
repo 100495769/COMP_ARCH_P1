@@ -28,13 +28,11 @@ auto main(int argc, char* argv[]) -> int {    // cogemos primero los argumentos 
   else if (operacion == "maxlevel") {  // la posicion 4 del vector de argumentos es la nueva intensidad. lo pasamos a entero
     mi_imagen.maxlevel(std::stoi(argv[4]));
   }
-  /*
   else if (operacion == "resize") {   // primero obtenemos los parametros extra: [4] es ancho, [5] es alto
     mi_imagen.resize(std::stoi(argv[4]), std::stoi(argv[5])); }
 
   // ICIAR :  4) Elimiacion de colores menos frecuentes
   // ICIAR :  5) Comprimir
-  */
   else{  // Cualquier otra cosa genera un error
     std::cerr << "Error: Operacion no valida\n";
     return 1; }

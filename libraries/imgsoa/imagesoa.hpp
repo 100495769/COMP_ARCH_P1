@@ -30,6 +30,7 @@ class ImageSOA {
   void cargar_imagen(std::string & path_imagen);
   void guardar_imagen(std::string & path_imagen);
   auto verificar_datos() -> bool;
+  void resize(int nuevo_ancho, int nuevo_alto);
 };
 
 

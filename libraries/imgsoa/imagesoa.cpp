@@ -6,6 +6,7 @@
 #include <fstream>
 #include <vector>
 #include <cstdint>
+#include <algorithm>
 #include "imagesoa.hpp"
 
 ImageSOA::ImageSOA() = default;
@@ -108,8 +109,107 @@ void ImageSOA::maxlevel(int nueva_intensidad) {     // Esta función escala la i
   }
 }
 
-/*
-void ImageSOA::resize(int nuevo_ancho, int nuevo_alto) {      // Esta función escala el tamaño de la imagen a los nuevos valores de ancho y alto dado.
+void ImageSOA::resize(int nuevo_ancho, int nuevo_alto) {// Esta función escala el tamaño de la imagen a los nuevos valores de ancho y alto dado.
+  auto propocion_anchura = static_cast<float>(ancho)/static_cast<float>(nuevo_ancho);
+  auto propocion_altura = static_cast<float>(alto)/static_cast<float>(nuevo_alto);
 
+  int tamano_matriz = nuevo_alto * nuevo_ancho;
+  auto tamano_matriz_unsigned = static_cast<size_t>(tamano_matriz);
+  std::vector<int> nuevo_red, nuevo_green, nuevo_blue;
+  nuevo_red.resize(tamano_matriz_unsigned);
+  nuevo_green.resize(tamano_matriz_unsigned);
+  nuevo_blue.resize(tamano_matriz_unsigned);
+
+  for (int nuevo_x = 0; nuevo_x < nuevo_alto; nuevo_x++) {
+    for (int nuevo_y =0; nuevo_y < nuevo_ancho; nuevo_y++) {
+      float x_original = static_cast<float>(nuevo_x) * propocion_anchura;
+      float y_original = static_cast<float>(nuevo_y) * propocion_altura;
+
+      int x_low = static_cast<int>(std::floor(x_original));
+      int x_high = static_cast<int>(std::ceil(x_original));
+
+      int y_low = static_cast<int>(std::floor(y_original));
+      int y_high = static_cast<int>(std::ceil(y_original));
+
+      // getting rgb's of pixels next to the current one
+      // since we store pixels in 2D array flattened into 1D array -> accessing by y*width + x
+      // y -> row number (altura), x -> column number (anchura)
+
+      // bottom left pixel assessment
+      int red_low_left = red[static_cast<unsigned long>(y_low * ancho + x_low)];
+      int green_low_left = green[static_cast<unsigned long>(y_low * ancho + x_low)];
+      int blue_low_left = blue[static_cast<unsigned long>(y_low * ancho + x_low)];
+
+      // bottom right pixel assessment
+      int red_low_right = red[static_cast<unsigned long>(y_low * ancho + x_high)];
+      int green_low_right = green[static_cast<unsigned long>(y_low * ancho + x_high)];
+      int blue_low_right = blue[static_cast<unsigned long>(y_low * ancho + x_high)];
+
+      // top left pixel assessment
+      int red_high_left = red[static_cast<unsigned long>(y_high * ancho + x_low)];
+      int green_high_left = green[static_cast<unsigned long>(y_high * ancho + x_low)];
+      int blue_high_left = blue[static_cast<unsigned long>(y_high * ancho + x_low)];
+
+      // top right pixel assessment
+      int red_high_right = red[static_cast<unsigned long>(y_high * ancho + x_high)];
+      int green_high_right = green[static_cast<unsigned long>(y_high * ancho + x_high)];
+      int blue_high_right = blue[static_cast<unsigned long>(y_high * ancho + x_high)];
+
+      // linear interpolation for red in x-axis
+      float L_red_c1 = static_cast<float>(red_low_left) * (x_original - static_cast<float>(x_high))/(static_cast<float>(x_low - x_high)) +
+                   static_cast<float>(red_high_left) * (x_original - static_cast<float>(x_low))/(static_cast<float>(x_high - x_low));
+
+      float L_red_c2 = static_cast<float>(red_low_right) * (x_original - static_cast<float>(x_high))/(static_cast<float>(x_low - x_high)) +
+                     static_cast<float>(red_high_right) * (x_original - static_cast<float>(x_low))/(static_cast<float>(x_high - x_low));
+
+      // linear interpolation for red in y-axis
+      float red_final = L_red_c1 * (y_original - static_cast<float>(y_high))/(static_cast<float>(y_low - y_high)) +
+                        L_red_c2 * (y_original - static_cast<float>(y_low))/(static_cast<float>(y_high - y_low));
+
+      // linear interpolation for blue in x-axis
+      float L_blue_c1 = static_cast<float>(blue_low_left) * (x_original - static_cast<float>(x_high))/(static_cast<float>(x_low - x_high)) +
+                       static_cast<float>(blue_high_left) * (x_original - static_cast<float>(x_low))/(static_cast<float>(x_high - x_low));
+
+      float L_blue_c2 = static_cast<float>(blue_low_right) * (x_original - static_cast<float>(x_high))/(static_cast<float>(x_low - x_high)) +
+                       static_cast<float>(blue_high_right) * (x_original - static_cast<float>(x_low))/(static_cast<float>(x_high - x_low));
+
+      // linear interpolation for blue in y-axis
+      float blue_final = L_blue_c1 * (y_original - static_cast<float>(y_high))/(static_cast<float>(y_low - y_high)) +
+                        L_blue_c2 * (y_original - static_cast<float>(y_low))/(static_cast<float>(y_high - y_low));
+
+      // linear interpolation for green in x-axis
+      float L_green_c1 = static_cast<float>(green_low_left) * (x_original - static_cast<float>(x_high))/(static_cast<float>(x_low - x_high)) +
+                       static_cast<float>(green_high_left) * (x_original - static_cast<float>(x_low))/(static_cast<float>(x_high - x_low));
+
+      float L_green_c2 = static_cast<float>(green_low_right) * (x_original - static_cast<float>(x_high))/(static_cast<float>(x_low - x_high)) +
+                       static_cast<float>(green_high_right) * (x_original - static_cast<float>(x_low))/(static_cast<float>(x_high - x_low));
+
+      // linear interpolation for green in y-axis
+      float green_final = L_green_c1 * (y_original - static_cast<float>(y_high))/(static_cast<float>(y_low - y_high)) +
+                        L_green_c2 * (y_original - static_cast<float>(y_low))/(static_cast<float>(y_high - y_low));
+
+      unsigned long nueva_posicion = static_cast<unsigned long>(nuevo_y * nuevo_alto + nuevo_x);
+      nuevo_red[nueva_posicion] = static_cast<int>(red_final);
+      nuevo_green[nueva_posicion] = static_cast<int>(green_final);
+      nuevo_blue[nueva_posicion] = static_cast<int>(blue_final);
+    }
+  }
+
+  // resize vectors to the size of new ones
+  red.resize(nuevo_red.size());
+  green.resize(nuevo_green.size());
+  blue.resize(nuevo_blue.size());
+
+  // copy contents from new rgb vectors into the old ones
+  std::copy(nuevo_red.begin(), nuevo_red.end(), red.begin());
+  std::copy(nuevo_green.begin(), nuevo_green.end(), green.begin());
+  std::copy(nuevo_blue.begin(), nuevo_blue.end(), blue.begin());
+
+  ancho = nuevo_ancho;
+  alto = nuevo_alto;
+
+  // clear up new contents
+  nuevo_red.clear();
+  nuevo_green.clear();
+  nuevo_blue.clear();
 }
-*/
