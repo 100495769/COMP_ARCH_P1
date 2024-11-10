@@ -28,7 +28,7 @@ class ImageSOA {
 
   // Declaramos dos metodos para cargar y guardar la imagen desde el path del archivo
   void cargar_imagen(std::string & path_imagen);
-  void guardar_imagen(std::string & path_imagen);  // ponemos el cost para que no se modifique nigun miembro de la clase
+  void guardar_imagen(std::string & path_imagen);
   auto verificar_datos() -> bool;
 };
 
