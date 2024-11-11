@@ -152,7 +152,7 @@ void ImageSOA::copy_contents(std::vector<int> &nuevo_red, std::vector<int> &nuev
   nuevo_blue.clear();
 }
 
-std::vector<float> ImageSOA::interpolation(SurroundingColoursSOA& surrounding_colours, float x_original, float y_original){
+std::array<float, 3> ImageSOA::interpolation(SurroundingColoursSOA& surrounding_colours, float x_original, float y_original){
 
   float frac_part_x = x_original - std::floor(x_original); // calculating the fraction parts
   float frac_part_y = y_original - std::floor(y_original);
@@ -173,8 +173,7 @@ std::vector<float> ImageSOA::interpolation(SurroundingColoursSOA& surrounding_co
   float green_final = green_bottom + (green_top - green_bottom) * frac_part_y;
   float blue_final = blue_bottom + (blue_top - blue_bottom) * frac_part_y;
 
-  std::vector<float> final_colores = {red_final, green_final, blue_final};
-  return final_colores;
+  return {red_final, green_final, blue_final};
 }
 
 void ImageSOA::resize(int nuevo_ancho, int nuevo_alto) {// Esta función escala el tamaño de la imagen a los nuevos valores de ancho y alto dado.
@@ -204,7 +203,7 @@ void ImageSOA::resize(int nuevo_ancho, int nuevo_alto) {// Esta función escala 
       SurroundingColoursSOA surrounding_colours;
       pixel_assessment(coordenadas, surrounding_colours); // filling up the structure of colors for these surrounding pixels
       //interpolating colors by x and y axes
-      std::vector<float> final_colores = interpolation(surrounding_colours, x_original, y_original);
+      std::array<float, 3>  final_colores = interpolation(surrounding_colours, x_original, y_original);
       // filling up new matrices with intepolated colors
       size_t nueva_posicion = static_cast<size_t>(nuevo_y * nuevo_ancho + nuevo_x);
       nuevo_red[nueva_posicion] = static_cast<int>(final_colores[0]);

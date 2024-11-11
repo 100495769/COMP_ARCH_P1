@@ -127,7 +127,7 @@ void ImageAOS::copy_contents_aos(std::vector<pixel> nuevo_vector_pixeles) {
   nuevo_vector_pixeles.clear();
 }
 
-std::vector<float> ImageAOS::interpolation_aos(SurroundingColoursAOS& surrounding_colours, float x_original, float y_original){
+std::array<float, 3> ImageAOS::interpolation_aos(SurroundingColoursAOS& surrounding_colours, float x_original, float y_original){
 
   float frac_part_x = x_original - std::floor(x_original); // calculating the fraction parts
   float frac_part_y = y_original - std::floor(y_original);
@@ -148,8 +148,7 @@ std::vector<float> ImageAOS::interpolation_aos(SurroundingColoursAOS& surroundin
   float green_final = green_bottom + (green_top - green_bottom) * frac_part_y;
   float blue_final = blue_bottom + (blue_top - blue_bottom) * frac_part_y;
 
-  std::vector<float> final_colores = {red_final, green_final, blue_final};
-  return final_colores;
+  return {red_final, green_final, blue_final};
 }
 
 void ImageAOS::resize_aos(int nuevo_ancho, int nuevo_alto) {// Esta función escala el tamaño de la imagen a los nuevos valores de ancho y alto dado.
@@ -179,7 +178,7 @@ void ImageAOS::resize_aos(int nuevo_ancho, int nuevo_alto) {// Esta función esc
       SurroundingColoursAOS surrounding_colours;
       pixel_assessment_aos(coordenadas, surrounding_colours); // filling up the structure of colors for these surrounding pixels
       //interpolating colors by x and y axes
-      std::vector<float> final_colores = interpolation_aos(surrounding_colours, x_original, y_original);
+      std::array<float, 3> final_colores = interpolation_aos(surrounding_colours, x_original, y_original);
       // filling up new matrices with intepolated colors
       size_t nueva_posicion = (static_cast<size_t>(nuevo_y * nuevo_ancho + nuevo_x));
 

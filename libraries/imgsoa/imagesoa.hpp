@@ -47,7 +47,7 @@ class ImageSOA {
   void resize(int nuevo_ancho, int nuevo_alto);
   void pixel_assessment(CoordenadasSOA& coordenadas, SurroundingColoursSOA& surrounding_colours);
   void copy_contents(std::vector<int> &nuevo_red, std::vector<int> &nuevo_green, std::vector<int> &nuevo_blue);
-  std::vector<float> interpolation(SurroundingColoursSOA& surrounding_colours, float x_original, float y_original);
+  std::array<float, 3> interpolation(SurroundingColoursSOA& surrounding_colours, float x_original, float y_original);
 };
 
 #endif //COMP_ARCH_LAB1_IMAGESOA_H
