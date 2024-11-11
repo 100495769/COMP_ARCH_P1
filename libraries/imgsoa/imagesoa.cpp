@@ -109,31 +109,30 @@ void ImageSOA::maxlevel(int nueva_intensidad) {     // Esta función escala la i
   }
 }
 // this function gets the rgb values for the 4 nearby pixels that are going to be interpolated later
-void ImageSOA::pixel_assessment(size_t x_low, size_t y_low, size_t x_high, size_t y_high, SurroundingColoursSOA& surrounding_colours) {
+void ImageSOA::pixel_assessment(CoordenadasSOA& coordenadas, SurroundingColoursSOA& surrounding_colours) {
 
   // since we store pixels in 2D array flattened into 1D array -> accessing by y*width + x
   // y -> row number (altura), x -> column number (anchura)
-
   size_t ancho_casted = static_cast<size_t>(ancho);
   // bottom left pixel assessment
-  surrounding_colours.red_low_left = red[y_low * ancho_casted + x_low];
-  surrounding_colours.green_low_left = green[y_low * static_cast<size_t>(ancho_casted) + x_low];
-  surrounding_colours.blue_low_left = blue[y_low * ancho_casted + x_low];
+  surrounding_colours.red_low_left = red[coordenadas.y_low * ancho_casted + coordenadas.x_low];
+  surrounding_colours.green_low_left = green[coordenadas.y_low * static_cast<size_t>(ancho_casted) + coordenadas.x_low];
+  surrounding_colours.blue_low_left = blue[coordenadas.y_low * ancho_casted + coordenadas.x_low];
 
   // bottom right pixel assessment
-  surrounding_colours.red_low_right = red[y_low * ancho_casted + x_high];
-  surrounding_colours.green_low_right = green[y_low * ancho_casted + x_high];
-  surrounding_colours.blue_low_right = blue[y_low * ancho_casted + x_high];
+  surrounding_colours.red_low_right = red[coordenadas.y_low * ancho_casted + coordenadas.x_high];
+  surrounding_colours.green_low_right = green[coordenadas.y_low * ancho_casted + coordenadas.x_high];
+  surrounding_colours.blue_low_right = blue[coordenadas.y_low * ancho_casted + coordenadas.x_high];
 
   // top left pixel assessment
-  surrounding_colours.red_high_left = red[y_high * ancho_casted + x_low];
-  surrounding_colours.green_high_left = green[y_high * ancho_casted + x_low];
-  surrounding_colours.blue_high_left = blue[y_high * ancho_casted + x_low];
+  surrounding_colours.red_high_left = red[coordenadas.y_high * ancho_casted + coordenadas.x_low];
+  surrounding_colours.green_high_left = green[coordenadas.y_high * ancho_casted + coordenadas.x_low];
+  surrounding_colours.blue_high_left = blue[coordenadas.y_high * ancho_casted + coordenadas.x_low];
 
   // top right pixel assessment
-  surrounding_colours.red_high_right = red[y_high * ancho_casted + x_high];
-  surrounding_colours.green_high_right = green[y_high * ancho_casted + x_high];
-  surrounding_colours.blue_high_right = blue[y_high * ancho_casted + x_high];
+  surrounding_colours.red_high_right = red[coordenadas.y_high * ancho_casted + coordenadas.x_high];
+  surrounding_colours.green_high_right = green[coordenadas.y_high * ancho_casted + coordenadas.x_high];
+  surrounding_colours.blue_high_right = blue[coordenadas.y_high * ancho_casted + coordenadas.x_high];
 }
 
 void ImageSOA::copy_contents(std::vector<int> &nuevo_red, std::vector<int> &nuevo_green, std::vector<int> &nuevo_blue) {
@@ -196,13 +195,14 @@ void ImageSOA::resize(int nuevo_ancho, int nuevo_alto) {// Esta función escala 
       float x_original = static_cast<float>(nuevo_x) * proporcion_anchura;
       float y_original = static_cast<float>(nuevo_y) * proporcion_altura;
       //taking the coordinates of 4 pixeles más proximos (floor x ceiling functions)
-      size_t x_low = static_cast<size_t>(std::floor(x_original));
-      size_t x_high = static_cast<size_t>(std::ceil(x_original));
-      size_t y_low = static_cast<size_t>(std::floor(y_original));
-      size_t y_high = static_cast<size_t>(std::ceil(y_original));
+      CoordenadasSOA coordenadas;
+      coordenadas.x_low = static_cast<size_t>(std::floor(x_original));
+      coordenadas.x_high = static_cast<size_t>(std::ceil(x_original));
+      coordenadas.y_low = static_cast<size_t>(std::floor(y_original));
+      coordenadas.y_high = static_cast<size_t>(std::ceil(y_original));
 
       SurroundingColoursSOA surrounding_colours;
-      pixel_assessment(x_low, y_low, x_high, y_high, surrounding_colours); // filling up the structure of colors for these surrounding pixels
+      pixel_assessment(coordenadas, surrounding_colours); // filling up the structure of colors for these surrounding pixels
       //interpolating colors by x and y axes
       std::vector<float> final_colores = interpolation(surrounding_colours, x_original, y_original);
       // filling up new matrices with intepolated colors

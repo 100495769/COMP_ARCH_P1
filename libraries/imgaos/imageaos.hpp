@@ -26,6 +26,13 @@ class ImageAOS {
       pixel high_right;
   };
 
+  struct CoordenadasAOS {
+      size_t x_low;
+      size_t y_low;
+      size_t x_high;
+      size_t y_high;
+  };
+
   // Estructura de datos en formato AOS con los pixeles de la imagen
   std::vector<pixel> vector_pixeles;
 
@@ -44,7 +51,7 @@ class ImageAOS {
   void guardar_imagen_aos(std::string & path_imagen);
   auto verificar_datos_aos() -> bool;
   void resize_aos(int nuevo_ancho, int nuevo_alto);
-  void pixel_assessment_aos(size_t x_low, size_t y_low, size_t x_high, size_t y_high, SurroundingColoursAOS& surrounding_colours);
+  void pixel_assessment_aos(CoordenadasAOS& coordenadas, SurroundingColoursAOS& surrounding_colours);
   void copy_contents_aos(std::vector<pixel> nuevo_vector_pixeles);
   std::vector<float> interpolation_aos(SurroundingColoursAOS& surrounding_colours, float x_original, float y_original);
 };

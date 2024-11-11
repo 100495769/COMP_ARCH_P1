@@ -37,8 +37,15 @@ class ImageSOA {
       int red_high_left, green_high_left, blue_high_left;
       int red_high_right, green_high_right, blue_high_right;
   };
+
+  struct CoordenadasSOA {
+      size_t x_low;
+      size_t y_low;
+      size_t x_high;
+      size_t y_high;
+  };
   void resize(int nuevo_ancho, int nuevo_alto);
-  void pixel_assessment(size_t x_low, size_t y_low, size_t x_high, size_t y_high, SurroundingColoursSOA& surrounding_colours);
+  void pixel_assessment(CoordenadasSOA& coordenadas, SurroundingColoursSOA& surrounding_colours);
   void copy_contents(std::vector<int> &nuevo_red, std::vector<int> &nuevo_green, std::vector<int> &nuevo_blue);
   std::vector<float> interpolation(SurroundingColoursSOA& surrounding_colours, float x_original, float y_original);
 };

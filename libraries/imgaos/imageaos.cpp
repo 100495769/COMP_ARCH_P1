@@ -105,18 +105,18 @@ void ImageAOS::maxlevel(int nueva_intensidad) {     // Esta función escala la i
 }
 
 // this function gets the rgb values for the 4 nearby pixels that are going to be interpolated later
-void ImageAOS::pixel_assessment_aos(size_t x_low, size_t y_low, size_t x_high, size_t y_high, SurroundingColoursAOS& surrounding_colours) {
+void ImageAOS::pixel_assessment_aos(CoordenadasAOS& coordenadas, SurroundingColoursAOS& surrounding_colours) {
   // since we store pixels in 2D array flattened into 1D array -> accessing by y*width + x
   // y -> row number (altura), x -> column number (anchura)
   size_t ancho_casted = static_cast<size_t>(ancho);
   // bottom left pixel assessment
-  surrounding_colours.low_left = vector_pixeles[y_low * ancho_casted + x_low];
+  surrounding_colours.low_left = vector_pixeles[coordenadas.y_low * ancho_casted + coordenadas.x_low];
   // bottom right pixel assessment
-  surrounding_colours.low_right = vector_pixeles[y_low * ancho_casted + x_high];
+  surrounding_colours.low_right = vector_pixeles[coordenadas.y_low * ancho_casted + coordenadas.x_high];
   // top left pixel assessment
-  surrounding_colours.high_left = vector_pixeles[y_high * ancho_casted + x_low];
+  surrounding_colours.high_left = vector_pixeles[coordenadas.y_high * ancho_casted + coordenadas.x_low];
   // top right pixel assessment
-  surrounding_colours.high_right = vector_pixeles[y_high * ancho_casted + x_high];
+  surrounding_colours.high_right = vector_pixeles[coordenadas.y_high * ancho_casted + coordenadas.x_high];
 }
 
 void ImageAOS::copy_contents_aos(std::vector<pixel> nuevo_vector_pixeles) {
@@ -169,13 +169,15 @@ void ImageAOS::resize_aos(int nuevo_ancho, int nuevo_alto) {// Esta función esc
       float x_original = static_cast<float>(nuevo_x) * proporcion_anchura;
       float y_original = static_cast<float>(nuevo_y) * proporcion_altura;
       //taking the coordinates of 4 pixeles más proximos (floor x ceiling functions)
-      size_t x_low = static_cast<size_t>(std::floor(x_original));
-      size_t x_high = static_cast<size_t>(std::ceil(x_original));
-      size_t y_low = static_cast<size_t>(std::floor(y_original));
-      size_t y_high = static_cast<size_t>(std::ceil(y_original));
+      CoordenadasAOS coordenadas;
+
+      coordenadas.x_low = static_cast<size_t>(std::floor(x_original));
+      coordenadas.x_high = static_cast<size_t>(std::ceil(x_original));
+      coordenadas.y_low = static_cast<size_t>(std::floor(y_original));
+      coordenadas.y_high = static_cast<size_t>(std::ceil(y_original));
 
       SurroundingColoursAOS surrounding_colours;
-      pixel_assessment_aos(x_low, y_low, x_high, y_high, surrounding_colours); // filling up the structure of colors for these surrounding pixels
+      pixel_assessment_aos(coordenadas, surrounding_colours); // filling up the structure of colors for these surrounding pixels
       //interpolating colors by x and y axes
       std::vector<float> final_colores = interpolation_aos(surrounding_colours, x_original, y_original);
       // filling up new matrices with intepolated colors
