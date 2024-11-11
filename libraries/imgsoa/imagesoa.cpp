@@ -109,7 +109,7 @@ void ImageSOA::maxlevel(int nueva_intensidad) {     // Esta función escala la i
   }
 }
 // this function gets the rgb values for the 4 nearby pixels that are going to be interpolated later
-void ImageSOA::pixel_assessment(size_t x_low, size_t y_low, size_t x_high, size_t y_high, SurroundingColours& surrounding_colours) {
+void ImageSOA::pixel_assessment(size_t x_low, size_t y_low, size_t x_high, size_t y_high, SurroundingColoursSOA& surrounding_colours) {
 
   // since we store pixels in 2D array flattened into 1D array -> accessing by y*width + x
   // y -> row number (altura), x -> column number (anchura)
@@ -153,7 +153,7 @@ void ImageSOA::copy_contents(std::vector<int> &nuevo_red, std::vector<int> &nuev
   nuevo_blue.clear();
 }
 
-std::vector<float> ImageSOA::interpolation(SurroundingColours& surrounding_colours, float x_original, float y_original){
+std::vector<float> ImageSOA::interpolation(SurroundingColoursSOA& surrounding_colours, float x_original, float y_original){
 
   float frac_part_x = x_original - std::floor(x_original); // calculating the fraction parts
   float frac_part_y = y_original - std::floor(y_original);
@@ -190,8 +190,8 @@ void ImageSOA::resize(int nuevo_ancho, int nuevo_alto) {// Esta función escala 
   nuevo_green.resize(tamano_matriz_unsigned);
   nuevo_blue.resize(tamano_matriz_unsigned);
 
-  for (int nuevo_x = 0; nuevo_x < nuevo_alto; nuevo_x++) {  //iterating through each position in new coordinates
-    for (int nuevo_y =0; nuevo_y < nuevo_ancho; nuevo_y++) {
+  for (int nuevo_y = 0; nuevo_y < nuevo_alto; nuevo_y++) {  //iterating through each position in new coordinates
+    for (int nuevo_x =0; nuevo_x < nuevo_ancho; nuevo_x++) {
       //taking the initial x and y values
       float x_original = static_cast<float>(nuevo_x) * proporcion_anchura;
       float y_original = static_cast<float>(nuevo_y) * proporcion_altura;
@@ -201,12 +201,12 @@ void ImageSOA::resize(int nuevo_ancho, int nuevo_alto) {// Esta función escala 
       size_t y_low = static_cast<size_t>(std::floor(y_original));
       size_t y_high = static_cast<size_t>(std::ceil(y_original));
 
-      SurroundingColours surrounding_colours;
+      SurroundingColoursSOA surrounding_colours;
       pixel_assessment(x_low, y_low, x_high, y_high, surrounding_colours); // filling up the structure of colors for these surrounding pixels
       //interpolating colors by x and y axes
       std::vector<float> final_colores = interpolation(surrounding_colours, x_original, y_original);
       // filling up new matrices with intepolated colors
-      size_t nueva_posicion = (static_cast<size_t>(nuevo_y * nuevo_ancho + nuevo_x));
+      size_t nueva_posicion = static_cast<size_t>(nuevo_y * nuevo_ancho + nuevo_x);
       nuevo_red[nueva_posicion] = static_cast<int>(final_colores[0]);
       nuevo_green[nueva_posicion] = static_cast<int>(final_colores[1]);
       nuevo_blue[nueva_posicion] = static_cast<int>(final_colores[2]);
