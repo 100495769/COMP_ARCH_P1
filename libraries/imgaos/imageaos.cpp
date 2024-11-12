@@ -1,12 +1,19 @@
 //
 // Created by sergio on 7/10/24.
 //
+#include "imageaos.hpp"
+#include <bitset>
+#include <cstdint>
+#include <fstream>
 #include <iostream>
 #include <string>
-#include <fstream>
+#include <unordered_map>
 #include <vector>
-#include <cstdint>
-#include "imageaos.hpp"
+#include <complex>
+#include <functional>
+#include <ranges>
+#include <tuple>
+#include <algorithm>
 
 ImageAOS::ImageAOS() = default;
 
@@ -193,4 +200,125 @@ void ImageAOS::resize_aos(int nuevo_ancho, int nuevo_alto) {// Esta función esc
   copy_contents_aos(nuevo_vector_pixeles);
   ancho = nuevo_ancho;
   alto = nuevo_alto;
+}
+
+
+auto ImageAOS::compress() -> std::tuple<size_t, std::vector<std::string>> {
+  // Función que creará el contenido comprimido de la imagen.
+  // comprimida
+  std::unordered_map<std::string, std::string> coloresUnicos{};  // conjunto de colores únicos que hemos visto en la imagen
+  int nowIndice = 0;
+  std::cout << "hola \n" << std::endl;
+  // en este bucle se genera el texto con los valores de los pixeles en la imagen comprimida
+  for (auto & vector_pixele : vector_pixeles) {
+    // en colores guardamos los tres colores
+    std::string color = std::to_string(vector_pixele.red) +
+      std::to_string(vector_pixele.green) + std::to_string(vector_pixele.blue);  // nos aseguramos que los colores esten en formato correcto
+    if (coloresUnicos.find(color) == coloresUnicos.end()) {
+      // no se ha visto este color antes, lo añadimos al texto y al mapa
+      coloresUnicos[color] = std::to_string(nowIndice);
+      nowIndice++;
+    }
+  }
+
+  size_t numColoresUnicos = coloresUnicos.size();
+  std::cout << "hola3 \n" << std::endl;
+std::cout << "hola \n" << std::endl;
+  std::unordered_map<std::string, std::string> bin = tablaIndices(numColoresUnicos, coloresUnicos);
+  size_t indice = vector_pixeles.size();
+  std::cout << indice << std::endl;
+  std::vector<std::string> pixelIndices;
+  pixelIndices.resize(indice);
+  // guardamos secuencia de indices de los colores en el texto
+  // mínimo vamos a necesitar 1B parnuma representar todos los indices
+  for (size_t i = 0; i < indice; i++) {
+    std::string color = std::to_string(vector_pixeles[i].red) +
+      std::to_string(vector_pixeles[i].green) + std::to_string(vector_pixeles[i].blue);
+    pixelIndices[i] = bin[color];
+  }
+  std::cout << "hola \n" << std::endl;
+  return {numColoresUnicos, pixelIndices};
+}
+
+auto ImageAOS::tablaIndices(size_t num, std::unordered_map<std::string, std::string> coloresUnicos) -> std::unordered_map<std::string, std::string> {
+  if (num <= 255) {
+    for (auto const& color : coloresUnicos) {
+      //int indice = color.second;
+      unsigned long long indice = std::stoull(color.second);
+      std::string ind = std::bitset<8>(indice).to_string();
+      coloresUnicos[color.first] = ind;
+    }
+    return coloresUnicos;
+  }
+  else if (num > 255 && num < 65536) {
+    //necesitamos 2B para representar todos los indices
+    //return 16;
+    for (auto const& color : coloresUnicos) {
+      unsigned long long indice = std::stoull(color.second);
+      std::string ind =((std::bitset<16>(indice) >> 8) | (std::bitset<16>(indice) << 8)).to_string();
+      coloresUnicos[color.first] = ind;
+    }
+    return coloresUnicos;
+  }
+  else if (num < 4294967296) {
+    for (auto const& color : coloresUnicos) {
+      unsigned long long indice= std::stoull(color.second);
+      std::string ind =(std::bitset<32>(indice)>> 24 | std::bitset<32>(indice) << 8 |
+        std::bitset<32>(indice) <<8 | std::bitset<32>(indice) << 24 ).to_string();
+      coloresUnicos[color.first] = ind;
+    }
+    return coloresUnicos;
+  }
+  else {
+    std::cerr << "El número de colores en la imagen es demasiado grande para ser representados en la imagen comprimida. \n";
+    exit(1);  // salimos de la ejecucion si el numero de colores es demasiado grande
+  }
+}
+
+void ImageAOS::guardar_compress(const std::string& nombre_fichero, const std::tuple<size_t, std::vector<std::string>>& elem) const {
+  std::ofstream archivo(nombre_fichero, std::ios::binary);
+  if (!archivo.is_open()) {   // salimos de la ejecucion si hay errores
+    std::cerr <<"Error: No se puede abrir el archivo dado en el path: " << nombre_fichero << "\n";
+    exit(1);
+  }
+  else if (!nombre_fichero.ends_with(".cppm")) {
+    std::cerr <<"Error: La extensión del fichero de salida no es la deseada";
+    exit(1);
+  }
+  auto [size, pixelIndices] = elem;
+  // escribimos los metadatos separados por espacios (salto de linea para el numero magico y la intensidad)
+  archivo << "C6"<< " " << ancho << " " << alto  << " " << max_intensidad << " " << std::to_string(size) << "\n";
+  //archivo << colores << "\n";
+  for (auto & vector_pixele : vector_pixeles) {
+    if(max_intensidad <= 255) {  // escribimos 1B (usamos el tipo uint8_t) para cada valor de cada vector
+      archivo.write(reinterpret_cast<const char*>(&vector_pixele.red), sizeof(uint8_t));
+      archivo.write(reinterpret_cast<const char*>(&vector_pixele.green), sizeof(uint8_t));
+      archivo.write(reinterpret_cast<const char*>(&vector_pixele.blue), sizeof(uint8_t));
+    }
+    else {   // escribimos 2B (usamos el tipo uint16_t) para cada valor de cada vector
+      archivo.write(reinterpret_cast<const char *>(&vector_pixele.red), sizeof(uint16_t));
+      archivo.write(reinterpret_cast<const char *>(&vector_pixele.green), sizeof(uint16_t));
+      archivo.write(reinterpret_cast<const char *>(&vector_pixele.blue), sizeof(uint16_t));
+    }
+  }
+  long unsigned int i = 0;
+  if (size <= 255) {
+    for ([[maybe_unused]]auto & vector_pixele : vector_pixeles) {
+      archivo.write(reinterpret_cast<char*>(&pixelIndices[i]), sizeof(uint8_t));
+      i ++;
+    }
+  }
+  else if (size > 255 && size < 65536) {
+    for ([[maybe_unused]]auto & vector_pixele : vector_pixeles) {
+      archivo.write(reinterpret_cast<char*>(&pixelIndices[i]), sizeof(uint16_t));
+      i ++;
+    }
+  }
+  else {
+    for ([[maybe_unused]]auto & vector_pixele : vector_pixeles) {
+      archivo.write(reinterpret_cast<char*>(&pixelIndices[i]), sizeof(uint32_t));
+      i ++;
+    }
+  }
+  archivo.close();
 }

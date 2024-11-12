@@ -4,6 +4,8 @@
 #include <iostream>
 #include <utility>
 #include <vector>
+#include <cstdint>
+#include <unordered_map>
 
 
 // Aquí irían las declaraciones de funciones, clases, etc.
@@ -48,6 +50,12 @@ class ImageSOA {
   void pixel_assessment(CoordenadasSOA& coordenadas, SurroundingColoursSOA& surrounding_colours);
   void copy_contents(std::vector<int> &nuevo_red, std::vector<int> &nuevo_green, std::vector<int> &nuevo_blue);
   std::array<float, 3> interpolation(SurroundingColoursSOA& surrounding_colours, float x_original, float y_original);
+
+  auto compress() -> std::tuple<size_t, std::vector<std::string>>; // ICIAR :  5) Comprimir
+  auto tablaIndices(size_t num, std::unordered_map<std::string, std::string> coloresUnicos)
+      -> std::unordered_map<std::string, std::string>;
+  void guardar_compress(std::string const & nombre_fichero, const std::tuple<size_t, std::vector<std::string>>& elem) const ;
+
 };
 
 #endif //COMP_ARCH_LAB1_IMAGESOA_H

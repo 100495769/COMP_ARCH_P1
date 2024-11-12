@@ -1,9 +1,21 @@
 //
 // Created by sergio on 7/10/24.
 //
-#include <iostream>
-#include <string>
+#include "imagesoa.hpp"
+
+#include <algorithm>
+#include <bitset>
+//#include <cmake-build-debug/_deps/googletest-src/googletest/src/gtest-internal-inl.h>
+#include <complex>
+#include <cstdint>
 #include <fstream>
+#include <functional>
+#include <iostream>
+#include <ranges>
+#include <sstream>
+#include <string>
+#include <tuple>
+#include <unordered_map>
 #include <vector>
 #include <cstdint>
 #include <algorithm>
@@ -215,4 +227,120 @@ void ImageSOA::resize(int nuevo_ancho, int nuevo_alto) {// Esta función escala 
   copy_contents(nuevo_red, nuevo_green, nuevo_blue);
   ancho = nuevo_ancho;
   alto = nuevo_alto;
+}
+
+auto ImageSOA::compress() -> std::tuple<size_t, std::vector<std::string>> {
+  // Función que creará el contenido comprimido de la imagen.
+  // comprimida
+  std::unordered_map<std::string, std::string> coloresUnicos{};  // conjunto de colores únicos que hemos visto en la imagen
+
+  int nowIndice = 0;
+
+  // en este bucle se genera el texto con los valores de los pixeles en la imagen comprimida
+  for (size_t i = 0; i < red.size(); i++) {
+    // en colores guardamos los tres colores
+    std::string color = std::to_string(red[i]) + std::to_string(green[i]) +
+                        std::to_string(blue[i]);  // nos aseguramos que los colores esten en formato correcto
+    if (coloresUnicos.find(color) == coloresUnicos.end()) {
+      // no se ha visto este color antes, lo añadimos al texto y al mapa
+      coloresUnicos[color] = std::to_string(nowIndice);
+      nowIndice++;
+    }
+  }
+
+  size_t numColoresUnicos = coloresUnicos.size();
+
+  std::unordered_map<std::string, std::string> bin = tablaIndices(numColoresUnicos, coloresUnicos);
+
+  std::vector<std::string> pixelIndices;
+  // guardamos secuencia de indices de los colores en el texto
+  pixelIndices.resize(red.size());
+  // mínimo vamos a necesitar 1B parnuma representar todos los indices
+  for (size_t i = 0; i < red.size(); i++) {
+    std::string color = std::to_string(red[i]) + std::to_string(green[i]) +
+                       std::to_string(blue[i]);
+    pixelIndices[i] = bin[color];
+  }
+  return {numColoresUnicos, pixelIndices};
+}
+
+auto ImageSOA::tablaIndices(size_t num, std::unordered_map<std::string, std::string> coloresUnicos) -> std::unordered_map<std::string, std::string> {
+  if (num <= 255) {
+    for (auto const& color : coloresUnicos) {
+      //int indice = color.second;
+      unsigned long long indice = std::stoull(color.second);
+      std::string ind = std::bitset<8>(indice).to_string();
+      coloresUnicos[color.first] = ind;
+    }
+    return coloresUnicos;
+  }
+  else if (num > 255 && num < 65536) {
+    //necesitamos 2B para representar todos los indices
+    //return 16;
+    for (auto const& color : coloresUnicos) {
+      unsigned long long indice = std::stoull(color.second);
+      std::string ind =((std::bitset<16>(indice) >> 8) | (std::bitset<16>(indice) << 8)).to_string();
+      coloresUnicos[color.first] = ind;
+    }
+    return coloresUnicos;
+
+  }
+  else if (num < 4294967296) {
+    for (auto const& color : coloresUnicos) {
+      unsigned long long indice= std::stoull(color.second);
+      std::string ind =(std::bitset<32>(indice)>> 24 | std::bitset<32>(indice) << 8 |
+        std::bitset<32>(indice) <<8 | std::bitset<32>(indice) << 24 ).to_string();
+      coloresUnicos[color.first] = ind;
+    }
+    return coloresUnicos;
+  }
+  else {
+    std::cerr << "El número de colores en la imagen es demasiado grande para ser representados en la imagen comprimida. \n";
+    exit(1);  // salimos de la ejecucion si el numero de colores es demasiado grande
+  }
+
+}
+
+void ImageSOA::guardar_compress(const std::string& nombre_fichero, const std::tuple<size_t, std::vector<std::string>>& elem) const {
+  std::ofstream archivo(nombre_fichero, std::ios::binary);
+  if (!archivo.is_open()) {   // salimos de la ejecucion si hay errores
+    std::cerr <<"Error: No se puede abrir el archivo dado en el path: " << nombre_fichero << "\n";
+    exit(1);
+  }
+  else if (!nombre_fichero.ends_with(".cppm")) {
+    std::cerr <<"Error: La extensión del fichero de salida no es la deseada";
+    exit(1);
+  }
+  auto [size, pixelIndices] = elem;
+  // escribimos los metadatos separados por espacios (salto de linea para el numero magico y la intensidad)
+  archivo << "C6"<< " " << ancho << " " << alto  << " " << max_intensidad << " " << std::to_string(size) << "\n";
+  //archivo << colores << "\n";
+  for (size_t i = 0; i < red.size(); i++) {
+    if(max_intensidad <= 255) {  // escribimos 1B (usamos el tipo uint8_t) para cada valor de cada vector
+      archivo.write(reinterpret_cast<const char*>(&red[i]), sizeof(uint8_t));
+      archivo.write(reinterpret_cast<const char*>(&green[i]), sizeof(uint8_t));
+      archivo.write(reinterpret_cast<const char*>(&blue[i]), sizeof(uint8_t));
+    }
+    else {   // escribimos 2B (usamos el tipo uint16_t) para cada valor de cada vector
+      archivo.write(reinterpret_cast<const char *>(&red[i]), sizeof(uint16_t));
+      archivo.write(reinterpret_cast<const char *>(&green[i]), sizeof(uint16_t));
+      archivo.write(reinterpret_cast<const char *>(&blue[i]), sizeof(uint16_t));
+    }
+  }
+  if (size <= 255) {
+    for (size_t i = 0; i < red.size(); i++) {
+      archivo.write(reinterpret_cast<char*>(&pixelIndices[i]), sizeof(uint8_t));
+    }
+  }
+  else if (size > 255 && size < 65536) {
+    for (size_t i = 0; i < red.size(); i++) {
+      archivo.write(reinterpret_cast<char*>(&pixelIndices[i]), sizeof(uint16_t));
+    }
+  }
+  else {
+    for (size_t i = 0; i < red.size(); i++) {
+      archivo.write(reinterpret_cast<char*>(&pixelIndices[i]), sizeof(uint32_t));
+    }
+  }
+  archivo.close();
 }
