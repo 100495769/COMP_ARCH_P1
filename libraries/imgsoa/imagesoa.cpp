@@ -103,9 +103,9 @@ void ImageSOA::maxlevel(int nueva_intensidad) {     // Esta función escala la i
     int nuevo_valor_red = (red[i] * nueva_intensidad) / max_intensidad;
     int nuevo_valor_green = (green[i] * nueva_intensidad) / max_intensidad;
     int nuevo_valor_blue = (blue[i] * nueva_intensidad) / max_intensidad;
-    red[i] = nuevo_valor_red;
-    green[i] = nuevo_valor_green;
-    blue[i] = nuevo_valor_blue;
+    red[i] = static_cast<uint8_t>(nuevo_valor_red);
+    green[i] = static_cast<uint8_t>(nuevo_valor_green);
+    blue[i] = static_cast<uint8_t>(nuevo_valor_blue);
   }
 }
 // this function gets the rgb values for the 4 nearby pixels that are going to be interpolated later

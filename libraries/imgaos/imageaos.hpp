@@ -16,7 +16,7 @@ class ImageAOS {
   int max_intensidad{}; // máximo valor de intensidad inicializada a 0
 
   struct pixel{ // cada pixel tiene tres valores
-    int red, green, blue;
+    uint8_t red, green, blue;
   };
 
   struct SurroundingColoursAOS {

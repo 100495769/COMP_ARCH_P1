@@ -98,9 +98,9 @@ void ImageAOS::maxlevel(int nueva_intensidad) {     // Esta función escala la i
     int nuevo_valor_red = (vector_pixele.red * nueva_intensidad) / max_intensidad;
     int nuevo_valor_green = (vector_pixele.green * nueva_intensidad) / max_intensidad;
     int nuevo_valor_blue = (vector_pixele.blue * nueva_intensidad) / max_intensidad;
-    vector_pixele.red = nuevo_valor_red;
-    vector_pixele.green = nuevo_valor_green;
-    vector_pixele.blue = nuevo_valor_blue;
+    vector_pixele.red = static_cast<uint8_t>(nuevo_valor_red);
+    vector_pixele.green = static_cast<uint8_t>(nuevo_valor_green);
+    vector_pixele.blue = static_cast<uint8_t>(nuevo_valor_blue);
   }
 }
 
@@ -183,9 +183,9 @@ void ImageAOS::resize_aos(int nuevo_ancho, int nuevo_alto) {// Esta función esc
       size_t nueva_posicion = (static_cast<size_t>(nuevo_y * nuevo_ancho + nuevo_x));
 
       pixel nuevo_pixel;
-      nuevo_pixel.red = static_cast<int>(final_colores[0]);
-      nuevo_pixel.green = static_cast<int>(final_colores[1]);
-      nuevo_pixel.blue = static_cast<int>(final_colores[2]);
+      nuevo_pixel.red = static_cast<uint8_t>(final_colores[0]);
+      nuevo_pixel.green = static_cast<uint8_t>(final_colores[1]);
+      nuevo_pixel.blue = static_cast<uint8_t>(final_colores[2]);
 
       nuevo_vector_pixeles[nueva_posicion] = nuevo_pixel;
     }

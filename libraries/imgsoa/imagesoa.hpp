@@ -15,7 +15,7 @@ class ImageSOA {
   int ancho{}; // ancho de la imagen en decimal inicializada a 0
   int alto{}; // alto de la imagen en decimal inicializada a 0
   int max_intensidad{}; // máximo valor de intensidad inicializada a 0
-  std::vector<int> red, green, blue;  // Estructura de datos en formato SOA con los pixeles de la imagen
+  std::vector<uint8_t> red, green, blue;  // Estructura de datos en formato SOA con los pixeles de la imagen
 
   public:
   // constructor
