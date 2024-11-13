@@ -14,6 +14,9 @@
 #include <ranges>
 #include <tuple>
 #include <algorithm>
+#include <cstdint>
+#include <unordered_map>
+#include "imageaos.hpp"
 
 ImageAOS::ImageAOS() = default;
 

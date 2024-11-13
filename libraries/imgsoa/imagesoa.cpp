@@ -19,7 +19,11 @@
 #include <vector>
 #include <cstdint>
 #include <algorithm>
+#include <cmath>
+#include <unordered_map>
 #include "imagesoa.hpp"
+#include "b_tree.hpp"
+#include <chrono>
 
 ImageSOA::ImageSOA() = default;
 
@@ -343,4 +347,42 @@ void ImageSOA::guardar_compress(const std::string& nombre_fichero, const std::tu
     }
   }
   archivo.close();
+}
+void ImageSOA::cutfreq(int n) {
+
+  auto start = std::chrono::high_resolution_clock::now();
+
+  // En este vector en cada indice cuantos elementos hay repetidos indice veces.
+  // Muy útil luego para sacar cosas ya lo comentare bien tod
+  b_tree arbol_de_apariciones;
+  std::vector<int> cantidad_de_repeticiones; // En el 0 los que haya solo una vez. En el 1 los que haya dos veces, etc.
+  std::size_t pixeles_en_imagen = static_cast<size_t>(ImageSOA::ancho*ImageSOA::alto);
+
+
+  for(size_t i = 0; i < pixeles_en_imagen; i++){
+    int repeticion = arbol_de_apariciones.insertar(red[i], green[i], blue[i]);
+    if (repeticion != 1){
+      cantidad_de_repeticiones[repeticion-1]++;
+      cantidad_de_repeticiones[repeticion-2]--;
+    }
+    else{
+      cantidad_de_repeticiones[0]++;
+    }
+  }
+
+
+  //Voy a calcular hasta que repeticion me quito.
+  std::size_t i = 0;
+  while (i < pixeles_en_imagen){
+
+
+  }
+  auto end = std::chrono::high_resolution_clock::now();
+
+  // Calcula la duración
+  auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+
+  std::cout << "Tiempo transcurrido: " << duration.count() << " microsegundos" << std::endl;
+  arbol_de_apariciones.in_order_traversal();
+
 }
