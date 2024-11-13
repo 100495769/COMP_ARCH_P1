@@ -6,6 +6,7 @@
 #include <fstream>
 #include <vector>
 #include <cstdint>
+#include <unordered_map>
 #include "imageaos.hpp"
 
 ImageAOS::ImageAOS() = default;
@@ -193,4 +194,10 @@ void ImageAOS::resize_aos(int nuevo_ancho, int nuevo_alto) {// Esta función esc
   copy_contents_aos(nuevo_vector_pixeles);
   ancho = nuevo_ancho;
   alto = nuevo_alto;
+}
+
+
+void ImageAOS::cutfreq(int n_eliminaciones){
+  mi_arn
+
 }

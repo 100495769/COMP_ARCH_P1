@@ -28,7 +28,9 @@ auto main(int argc, char* argv[]) -> int {    // cogemos primero los argumentos 
   }
   else if (operacion == "resize") {   // primero obtenemos los parametros extra: [4] es ancho, [5] es alto
     mi_imagen.resize_aos(std::stoi(argv[4]), std::stoi(argv[5])); }
-
+  else if (operacion == "cutfreq"){
+    mi_imagen.cutfreq(std::stoi(argv[4]));}
+  }
   // ICIAR :  4) Elimiacion de colores menos frecuentes
   // ICIAR :  5) Comprimir
 

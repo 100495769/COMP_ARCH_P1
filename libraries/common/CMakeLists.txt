@@ -2,6 +2,7 @@
 add_library(common
         progargs.cpp
         binaryio.cpp
+        b_tree.cpp
         #other2.cpp
 )
 # Use this line only if you have dependencies from this library to GSL

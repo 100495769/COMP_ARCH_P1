@@ -6,8 +6,8 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 
 # Set compiler options
-add_compile_options(-Wall -Wextra -Werror -pedantic -pedantic-errors -Wconversion -Wsign-conversion)
-set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} −march=native")
+#add_compile_options(-Wall -Wextra -Werror -pedantic -pedantic-errors -Wconversion -Wsign-conversion)
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -march=native")
 # Enable GoogleTest Library
 include(FetchContent)
 FetchContent_Declare(

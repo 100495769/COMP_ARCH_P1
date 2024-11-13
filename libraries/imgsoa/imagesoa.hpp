@@ -4,6 +4,7 @@
 #include <iostream>
 #include <utility>
 #include <vector>
+#include <array>
 
 
 // Aquí irían las declaraciones de funciones, clases, etc.
@@ -45,6 +46,7 @@ class ImageSOA {
       size_t y_high;
   };
   void resize(int nuevo_ancho, int nuevo_alto);
+  void cutfreq(int n);
   void pixel_assessment(CoordenadasSOA& coordenadas, SurroundingColoursSOA& surrounding_colours);
   void copy_contents(std::vector<int> &nuevo_red, std::vector<int> &nuevo_green, std::vector<int> &nuevo_blue);
   std::array<float, 3> interpolation(SurroundingColoursSOA& surrounding_colours, float x_original, float y_original);

@@ -54,6 +54,8 @@ class ImageAOS {
   void pixel_assessment_aos(CoordenadasAOS& coordenadas, SurroundingColoursAOS& surrounding_colours);
   void copy_contents_aos(std::vector<pixel> nuevo_vector_pixeles);
   std::array<float, 3> interpolation_aos(SurroundingColoursAOS& surrounding_colours, float x_original, float y_original);
+  std::vector<float> interpolation_aos(SurroundingColoursAOS& surrounding_colours, float x_original, float y_original);
+  void cutfreq(int n_elimaciones);
 };
 
 #endif //COMP_ARCH_LAB1_IMAGEAOS_H
