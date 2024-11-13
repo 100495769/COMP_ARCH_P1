@@ -31,21 +31,22 @@ auto main(int argc, char* argv[]) -> int {
     mi_imagen.maxlevel(std::stoi(argv[4]));
   }
   else if (operacion == "resize") {   // primero obtenemos los parametros extra: [4] es ancho, [5] es alto
-    mi_imagen.resize_aos(std::stoi(argv[4]), std::stoi(argv[5])); }
-  else if (operacion == "cutfreq"){
-    mi_imagen.cutfreq(std::stoi(argv[4]));}
+    mi_imagen.resize_aos(std::stoi(argv[4]), std::stoi(argv[5]));
   }
+  else if (operacion == "cutfreq"){
+    mi_imagen.cutfreq(std::stoi(argv[4]));
+  }
+
   else if (operacion == "compress") {    // esta operación devuelve los colores que se han eliminado
     std::cout << "Compresion en curso..." << std::endl;
     std::tuple<size_t, std::vector<std::string>> compresion = mi_imagen.compress();
     mi_imagen.guardar_compress(salida_path, compresion);
   }
-  // ICIAR :  4) Elimiacion de colores menos frecuentes
-  // ICIAR :  5) Comprimir
 
   else{  // Cualquier otra cosa genera un error
     std::cerr << "Error: Operacion no valida\n";
-    return 1; }
+    return 1;
+  }
 
   if (operacion != "info" && operacion != "compress") {    // guardamos la imagen con los cambios realizados
     mi_imagen.guardar_imagen_aos(salida_path);

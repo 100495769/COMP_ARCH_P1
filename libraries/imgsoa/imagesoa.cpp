@@ -17,7 +17,6 @@
 #include <tuple>
 #include <unordered_map>
 #include <vector>
-#include <algorithm>
 #include <cmath>
 #include "b_tree.hpp"
 #include <chrono>
