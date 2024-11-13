@@ -11,6 +11,7 @@
 #include <iostream>
 #include <utility>
 #include <vector>
+#include <array>
 
 // Aquí irían las declaraciones de funciones, clases, etc.
 // Definimos la clase ImageSOA con sus métodos y atributos
