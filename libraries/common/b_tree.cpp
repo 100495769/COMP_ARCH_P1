@@ -8,7 +8,7 @@
 #include <iostream>
 
 //IMPORTANTE, CUANTO MAS A LA IZQUIERDA MAYOR ES EL NUMERO
-auto b_tree::compare(int r_new, int g_new, int b_new, int r_old, int g_old, int b_old) -> int{
+auto b_tree::compare(std::uint8_t  r_new, std::uint8_t  g_new, std::uint8_t  b_new, std::uint8_t  r_old, std::uint8_t  g_old, std::uint8_t  b_old) -> int{
   // Retornea 2 si el new es mayor, 1 si el old es mayor y 0 si son iguales.
   auto new_key = std::tie(b_new, g_new, r_new);
   auto old_key = std::tie(b_old, g_old, r_old);
@@ -18,7 +18,7 @@ auto b_tree::compare(int r_new, int g_new, int b_new, int r_old, int g_old, int 
     return 0;
 
 }
-auto b_tree::crear_nodo(int & r, int & g, int & b){
+auto b_tree::crear_nodo(std::uint8_t  & r, std::uint8_t  & g, std::uint8_t  & b){
   // Crear el nodo.
   auto mi_nodo = std::make_unique<Nodo>(r, g, b);
 
@@ -120,7 +120,7 @@ void b_tree::reequilibrar(std::vector<std::unique_ptr<Nodo>*> camino, std::vecto
 }
 
 
-auto b_tree::insertar(int& r, int& g, int& b) -> int{
+auto b_tree::insertar(std::uint8_t & r, std::uint8_t & g, std::uint8_t & b) -> int{
 
   // Tenemos un nodo para iterar por el arbol.
   std::vector<std::unique_ptr<Nodo>*> camino;
@@ -181,7 +181,7 @@ auto b_tree::_in_order_traversal(std::unique_ptr<Nodo>* root) -> void {
 
     // Visit the current node
     counter++;
-    std::cout << counter<< " Color:" << (*root)->b << (*root)->g << (*root)->r << std::endl;
+    std::cout << counter<< " Color:" << static_cast<int>((*root)->b) << static_cast<int>((*root)->g)  << static_cast<int>((*root)->r) << std::endl;
 
     // Recur on the right subtree
     _in_order_traversal(&(*root)->nodo_der);

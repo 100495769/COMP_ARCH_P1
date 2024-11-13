@@ -5,6 +5,7 @@
 #include "../libraries/common/progargs.hpp"
 #include <iostream>
 #include <string>
+#include <chrono>
 
 auto main(int argc, char* argv[]) -> int {
   auto inicio = std::chrono::high_resolution_clock::now();
