@@ -69,5 +69,4 @@ class ImageAOS {
   void guardar_compress(std::string const & nombre_fichero,
                         std::tuple<size_t, std::vector<std::string>> const & elem) const;
 };
-
 #endif //COMP_ARCH_LAB1_IMAGEAOS_H

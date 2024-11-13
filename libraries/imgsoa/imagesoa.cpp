@@ -361,22 +361,25 @@ void ImageSOA::cutfreq(int n) {
 
   for(size_t i = 0; i < pixeles_en_imagen; i++){
     int repeticion = arbol_de_apariciones.insertar(red[i], green[i], blue[i]);
+    /*
     if (repeticion != 1){
       cantidad_de_repeticiones[repeticion-1]++;
       cantidad_de_repeticiones[repeticion-2]--;
     }
     else{
-      cantidad_de_repeticiones[0]++;
+      cantidad_de_repeticiones[0];
     }
+     */
   }
 
 
   //Voy a calcular hasta que repeticion me quito.
   std::size_t i = 0;
+  /*
   while (i < pixeles_en_imagen){
 
 
-  }
+  }*/
   auto end = std::chrono::high_resolution_clock::now();
 
   // Calcula la duración
