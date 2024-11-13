@@ -13,7 +13,6 @@ auto main(int argc, char* argv[]) -> int {
   if (!validate_parameters(argc, argumentos)) {
     return 1; // si los parametros no son validos, terminamos
   }
-
   std::string imagen_path = argv[1];
   std::string salida_path = argv[2];
   std::string operacion = argv[3];
@@ -29,24 +28,22 @@ auto main(int argc, char* argv[]) -> int {
     mi_imagen.maxlevel(std::stoi(argv[4]));
   }
   else if (operacion == "resize") {   // primero obtenemos los parametros extra: [4] es ancho, [5] es alto
-    mi_imagen.resize(std::stoi(argv[4]), std::stoi(argv[5])); }
-
+    mi_imagen.resize(std::stoi(argv[4]), std::stoi(argv[5]));
+  }
   else if (operacion == "cutfreq"){
     mi_imagen.cutfreq(std::stoi(argv [4]));
   }
-  // ICIAR :  5) Comprimir
   else if (operacion == "compress") {
     std::tuple<size_t, std::vector<std::string>> compresion = mi_imagen.compress();
     mi_imagen.guardar_compress(salida_path, compresion);
   }
   else{  // Cualquier otra cosa genera un error
     std::cerr << "Error: Operacion no valida\n";
-    return 1; }
-
+    return 1;
+  }
   if (operacion != "info" && operacion != "compress") {    // guardamos la imagen con los cambios realizados
     mi_imagen.guardar_imagen(salida_path);
   }
-
   return 0;
 }
 

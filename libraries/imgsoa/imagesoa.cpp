@@ -17,11 +17,8 @@
 #include <tuple>
 #include <unordered_map>
 #include <vector>
-#include <cstdint>
 #include <algorithm>
 #include <cmath>
-#include <unordered_map>
-#include "imagesoa.hpp"
 #include "b_tree.hpp"
 #include <chrono>
 
