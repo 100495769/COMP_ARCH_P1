@@ -344,6 +344,8 @@ void ImageSOA::guardar_compress(const std::string& nombre_fichero, const std::tu
   }
   archivo.close();
 }
+
+/*
 void ImageSOA::cutfreq(int n) {
 
   auto start = std::chrono::high_resolution_clock::now();
@@ -356,8 +358,8 @@ void ImageSOA::cutfreq(int n) {
 
 
   for(size_t i = 0; i < pixeles_en_imagen; i++){
-    int repeticion = arbol_de_apariciones.insertar(red[i], green[i], blue[i]);
-    /*
+    //int repeticion = arbol_de_apariciones.insertar(red[i], green[i], blue[i]);
+
     if (repeticion != 1){
       cantidad_de_repeticiones[repeticion-1]++;
       cantidad_de_repeticiones[repeticion-2]--;
@@ -365,8 +367,8 @@ void ImageSOA::cutfreq(int n) {
     else{
       cantidad_de_repeticiones[0];
     }
-     */
-  }
+
+  }*/
 
 
   //Voy a calcular hasta que repeticion me quito.
@@ -375,7 +377,7 @@ void ImageSOA::cutfreq(int n) {
   while (i < pixeles_en_imagen){
 
 
-  }*/
+  }
   auto end = std::chrono::high_resolution_clock::now();
 
   // Calcula la duración
@@ -385,3 +387,4 @@ void ImageSOA::cutfreq(int n) {
   arbol_de_apariciones.in_order_traversal();
 
 }
+*/
