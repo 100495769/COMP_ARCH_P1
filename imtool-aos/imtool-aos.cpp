@@ -33,9 +33,9 @@ auto main(int argc, char* argv[]) -> int {
   else if (operacion == "resize") {   // primero obtenemos los parametros extra: [4] es ancho, [5] es alto
     mi_imagen.resize_aos(std::stoi(argv[4]), std::stoi(argv[5]));
   }
-  else if (operacion == "cutfreq"){
-    mi_imagen.cutfreq(std::stoi(argv[4]));
-  }
+  //else if (operacion == "cutfreq"){
+  //  mi_imagen.cutfreq(std::stoi(argv[4]));
+  //}
 
   else if (operacion == "compress") {    // esta operación devuelve los colores que se han eliminado
     std::cout << "Compresion en curso..." << std::endl;

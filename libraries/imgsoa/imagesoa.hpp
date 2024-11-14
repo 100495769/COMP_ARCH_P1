@@ -53,10 +53,19 @@ class ImageSOA {
   void copy_contents(std::vector<int> &nuevo_red, std::vector<int> &nuevo_green, std::vector<int> &nuevo_blue);
   std::array<float, 3> interpolation(SurroundingColoursSOA& surrounding_colours, float x_original, float y_original);
 
-  auto compress() -> std::tuple<size_t, std::vector<std::string>>; // ICIAR :  5) Comprimir
+  auto compress() -> std::tuple<size_t, std::vector<std::string>>;
   auto tablaIndices(size_t num, std::unordered_map<std::string, std::string> coloresUnicos)
       -> std::unordered_map<std::string, std::string>;
   void guardar_compress(std::string const & nombre_fichero, const std::tuple<size_t, std::vector<std::string>>& elem) const ;
+
+  // definimos getters para los atributos privados
+  [[nodiscard]] auto get_numero_magico() const -> std::string { return numero_magico; }
+  [[nodiscard]] auto get_ancho() const -> int { return ancho; }
+  [[nodiscard]] auto get_alto() const -> int { return alto; }
+  [[nodiscard]] auto get_max_intensidad() const -> int { return max_intensidad; }
+  [[nodiscard]] auto get_red() const -> std::vector<uint8_t> { return red; }
+  [[nodiscard]] auto get_green() const -> std::vector<uint8_t> { return green; }
+  [[nodiscard]] auto get_blue() const -> std::vector<uint8_t> { return blue; }
 
 };
 
