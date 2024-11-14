@@ -69,5 +69,13 @@ class ImageAOS {
       -> std::unordered_map<std::string, std::string>;
   void guardar_compress(std::string const & nombre_fichero,
                         std::tuple<size_t, std::vector<std::string>> const & elem) const;
+
+    // definimos getters para los atributos privados
+    [[nodiscard]] auto get_numero_magico() const -> std::string { return numero_magico; }
+    [[nodiscard]] auto get_ancho() const -> int { return ancho; }
+    [[nodiscard]] auto get_alto() const -> int { return alto; }
+    [[nodiscard]] auto get_max_intensidad() const -> int { return max_intensidad; }
+    [[nodiscard]] auto get_pixeles() const -> std::vector<pixel> { return vector_pixeles; }
+
 };
 #endif //COMP_ARCH_LAB1_IMAGEAOS_H
