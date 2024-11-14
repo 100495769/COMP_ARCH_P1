@@ -67,6 +67,14 @@ class ImageSOA {
   [[nodiscard]] auto get_green() const -> std::vector<uint8_t> { return green; }
   [[nodiscard]] auto get_blue() const -> std::vector<uint8_t> { return blue; }
 
+  // Definimos los setters para los atributos privados
+  void set_numero_magico(std::string const & numero_magico) { ImageSOA::numero_magico = numero_magico; }
+  void set_ancho(int const & ancho) { ImageSOA::ancho = ancho; }
+  void set_alto(int const & alto) { ImageSOA::alto = alto; }
+  void set_max_intensidad(int const & max_intensidad) { ImageSOA::max_intensidad = max_intensidad; }
+  void set_red(std::vector<uint8_t> const & red) { ImageSOA::red = red; }
+  void set_green(std::vector<uint8_t> const & green) { ImageSOA::green = green; }
+  void set_blue(std::vector<uint8_t> const & blue) { ImageSOA::blue = blue; }
 };
 
 #endif //COMP_ARCH_LAB1_IMAGESOA_H
