@@ -8,5 +8,9 @@ add_executable(utest-imgaos
 target_link_libraries (utest-imgaos
         PRIVATE
         imgaos
+        common
+        GTest::gtest
         GTest::gtest_main
-        Microsoft.GSL::GSL)
+        Microsoft.GSL::GSL
+        stdc++
+        m)
