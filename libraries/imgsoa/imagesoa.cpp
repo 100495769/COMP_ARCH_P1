@@ -256,7 +256,7 @@ auto ImageSOA::compress() -> std::tuple<size_t, std::vector<std::string>> {
   for (size_t i = 0; i < red.size(); i++) {
     // en colores guardamos los tres colores
     std::string color = std::to_string(red[i]) + std::to_string(green[i]) +
-                        std::to_string(blue[i]);  // nos aseguramos que los colores esten en formato correcto
+                        std::to_string(blue[i]);
     if (coloresUnicos.find(color) == coloresUnicos.end()) {
       // no se ha visto este color antes, lo añadimos al texto y al mapa
       coloresUnicos[color] = std::to_string(nowIndice);

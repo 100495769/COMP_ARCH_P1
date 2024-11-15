@@ -44,8 +44,8 @@ auto tablaIndices(size_t num, std::unordered_map<std::string, std::string> color
     //return 16;
     for (auto const& color : coloresUnicos) {
       unsigned long long indice = std::stoull(color.second);
-      std::string ind =((std::bitset<16>(indice) >> 8) & std::bitset<16>(255) |
-        (std::bitset<16>(indice) << 8) & std::bitset<16>(65280)).to_string();
+      std::string ind =(((std::bitset<16>(indice) >> 8) & std::bitset<16>(255))|
+        ((std::bitset<16>(indice) << 8) & std::bitset<16>(65280))).to_string();
       coloresUnicos[color.first] = ind;
     }
     return coloresUnicos;
@@ -53,10 +53,10 @@ auto tablaIndices(size_t num, std::unordered_map<std::string, std::string> color
   else if (num < 4294967296) {
     for (auto const& color : coloresUnicos) {
       unsigned long long indice= std::stoull(color.second);
-      std::string ind =((std::bitset<32>(indice)>> 24) & std::bitset<32>(255) |
-        (std::bitset<32>(indice) >> 8) & std::bitset<32>(65280)|
-        (std::bitset<32>(indice) <<8) & std::bitset<32>(16711680) |
-        (std::bitset<32>(indice) << 24) & std::bitset<32>(4278190080)).to_string();
+      std::string ind =(((std::bitset<32>(indice)>> 24) & std::bitset<32>(255))|
+        ((std::bitset<32>(indice) >> 8) & std::bitset<32>(65280))|
+        ((std::bitset<32>(indice) <<8) & std::bitset<32>(16711680)) |
+        ((std::bitset<32>(indice) << 24) & std::bitset<32>(4278190080))).to_string();
       coloresUnicos[color.first] = ind;
     }
     return coloresUnicos;

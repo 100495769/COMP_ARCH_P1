@@ -55,11 +55,6 @@ TEST(ImageAOS_TEST, tablaIndices_error) {
   // numero de colores unicos a probar es muy grande para ser representados en la imagen comprimida.
   size_t coloresUnicosNum_prueba4 = 1203824932334;
   std::unordered_map<std::string, std::string> coloresUnicos_prueba4 = {{"163159148", "4790"}, {"1008173", "827321754"}, {"2562560", "3"}};
-  //::testing::internal::CaptureStderr();
- // std::unordered_map<std::string, std::string> coloresUnicos_devueltos4 = mi_imagen.tablaIndices(coloresUnicosNum_prueba4, coloresUnicos_prueba4);
-  //std::string salida_error = ::testing::internal::GetCapturedStderr();
-
-  //ASSERT_EQ(salida_error, "El número de colores en la imagen es demasiado grande para ser representados en la imagen comprimida. \n");
   ASSERT_EXIT(tablaIndices(coloresUnicosNum_prueba4, coloresUnicos_prueba4);, ::testing::ExitedWithCode(1), ".*");
 
 }
@@ -74,12 +69,6 @@ struct pixel {
 };
 TEST(ImageAOS_TEST, guardar_compress_non_valid) {
   std::string path_imagen = "/path/que/no_mola/nada/no_existe.cppm";
-  std::string magic_number = "C6";
-  int width = 2;
-  int height = 2;
-  int max_intensity = 255;
-
-  //std::vector<pixel> pixeles = {{255, 32, 03}, {40, 192, 54}};
 
   ImageAOS imagen_prueba;
   std::tuple<size_t, std::vector<std::string>> elem = {23, {"00111111", "00000000", "11111100", "00000011"}};
@@ -95,9 +84,9 @@ TEST(ImageAOS_TEST, guardar_compress_valid) {
   image_prueba.set_ancho(3);
   image_prueba.set_max_intensidad(245);
   //auto pixeles = {{255,  32, 03}, { 40, 192, 54}};
-  image_prueba.add_pixel({255,  32, 03});
-  image_prueba.add_pixel({255,  51, 98});
-  image_prueba.add_pixel({ 40, 192, 54});
+  image_prueba.add_pixel({.red =255, .green = 32,.blue = 03});
+  image_prueba.add_pixel({.red =255, .green = 51,.blue = 98});
+  image_prueba.add_pixel({.red = 40, .green = 192,.blue = 54});
 
   std::tuple<size_t, std::vector<std::string>> elem = {3, {"00000001", "00000010", "00000011"}};
   // guardamos en el path que no existe y comprobamos que salimos en salida de error jeje
@@ -116,9 +105,9 @@ TEST(ImageAOS_TEST, compress_funcionamiento_correcto_indices) {
   image_prueba.set_ancho(3);
   image_prueba.set_max_intensidad(245);
   //auto pixeles = {{255,  32, 03}, { 40, 192, 54}};
-  image_prueba.add_pixel({255,  32, 03});
-  image_prueba.add_pixel({255,  51, 98});
-  image_prueba.add_pixel({ 40, 192, 54});
+  image_prueba.add_pixel({.red =255, .green = 32,.blue = 03});
+  image_prueba.add_pixel({.red =255, .green = 51,.blue = 98});
+  image_prueba.add_pixel({.red = 40, .green = 192,.blue = 54});
 
   size_t expected_size_colors = 3;
   std::vector<std::string> pixelIndices = {"00000000", "00000001", "00000010"};
@@ -128,10 +117,10 @@ TEST(ImageAOS_TEST, compress_funcionamiento_correcto_indices) {
 TEST(ImageAOS_TEST, compress_calculo_tamaño_indice) {
     ImageAOS image_prueba;
     // Inicializar pixeles con colores específicos para pruebas
-    image_prueba.add_pixel({255,  32, 03});
-    image_prueba.add_pixel({255,  51, 98});
-    image_prueba.add_pixel({ 40, 192, 54});
-    // Ejecuta la función compress
+    image_prueba.add_pixel({.red =255, .green = 32,.blue = 03});
+    image_prueba.add_pixel({.red =255, .green = 51,.blue = 98});
+    image_prueba.add_pixel({.red = 40, .green = 192,.blue = 54});
+  // Ejecuta la función compress
     auto [numColoresUnicos, pixelIndices] = image_prueba.compress();
 
     // Comprobar el número de colores únicos
@@ -146,7 +135,7 @@ TEST(ImageAOS_TEST, compress_calculo_correcto_muchos_pixeles) {
     ImageAOS image_prueba;
 
     for (int i = 0; i < 1000; ++i) {
-        image_prueba.add_pixel({static_cast<uint8_t>(i +255 % 256 ), static_cast<uint8_t>((i +255) % 255), static_cast<uint8_t>((i +255) % 255)});
+        image_prueba.add_pixel({.red = static_cast<uint8_t>(i +255 % 256 ), .green = static_cast<uint8_t>((i +255) % 255),.blue = static_cast<uint8_t>((i +255) % 255)});
     }
 
     auto [numColoresUnicos, pixelIndices] = image_prueba.compress();
