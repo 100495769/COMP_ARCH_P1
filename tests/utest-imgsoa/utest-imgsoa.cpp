@@ -315,17 +315,21 @@ auto imagen_grande_maxlevel() -> ImageSOA {
   imagen_prueba.set_blue(azul);
   return imagen_prueba;
 }
-/*
+
 TEST(ImageSOA_TEST, maxlevel_valido_pequeño_pequeño) {
   // pasamos de 255 a 100.
-  ImageSOA pequena1 = imagen_pequena_maxlevel();
+  ImageSOA pequena1 = crear_imagen_prueba();
   int intens= pequena1.get_max_intensidad();
-  std::vector<uint8_t> expected_red;
-  std::vector<uint8_t> expected_green;
-  std::vector<uint8_t> expected_blue;
+
+  ASSERT_EQ(intens, 255); // la intensidad la coge bien
+
+  // cogemos los vectores de los pixeles y duplicamos para luego ir cambiando el valor de uno y comparar con el otro al hacer maxlevel
   std::vector<uint8_t> red = pequena1.get_red();
   std::vector<uint8_t> green = pequena1.get_green();
   std::vector<uint8_t> blue = pequena1.get_blue();
+  std::vector<uint8_t> expected_red = red;
+  std::vector<uint8_t> expected_green = green;
+  std::vector<uint8_t> expected_blue = blue;
 
   for (size_t i=0; i < red.size(); i++) {
     int nuevo_valor_red = (red[i] * 100) / intens;
@@ -451,7 +455,7 @@ TEST(ImageSOA_TEST, maxlevel_valido_grande_grande) {
     ASSERT_EQ(expected_blue[i], bluenew[i]);
   }
 }
- */
+
 
 // Tests para la FUNCIÓN RESIZE()----------------------------------------------------------|
 
