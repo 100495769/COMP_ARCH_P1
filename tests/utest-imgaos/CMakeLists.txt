@@ -11,6 +11,4 @@ target_link_libraries (utest-imgaos
         common
         GTest::gtest
         GTest::gtest_main
-        Microsoft.GSL::GSL
-        stdc++
-        m)
+        Microsoft.GSL::GSL)
