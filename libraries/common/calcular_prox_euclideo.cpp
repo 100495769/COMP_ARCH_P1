@@ -1,6 +1,7 @@
 //
 // Created by sergio on 14/11/24.
 //
+/*
 #include "calcular_prox_euclideo.hpp"
 #include <iostream>
 
@@ -78,3 +79,4 @@ auto calcular_prox_euclideo::prox_euclideo() -> std::vector<int> {
   prox_euclides.pop();
   return mi_return;
 };
+*/

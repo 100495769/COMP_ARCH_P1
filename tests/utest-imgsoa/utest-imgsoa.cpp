@@ -242,7 +242,6 @@ TEST(ImageSOA_TEST, cargar_imagen_no_valido_formato_incorrecto) {
   ASSERT_EXIT(imagen_prueba.cargar_imagen(path_imagen), ::testing::ExitedWithCode(1), ".*");
 }
 
-
 TEST(ImageSOA_TEST, guardar_imagen_valido) {
   std::string path_imagen = "/tmp/imagen_prueba_guardada.ppm";
   std::string magic_number = "P6";
@@ -265,7 +264,6 @@ TEST(ImageSOA_TEST, guardar_imagen_valido) {
   std::ifstream file(path_imagen, std::ios::binary);
   ASSERT_TRUE(file.good());
 }
-
 
 TEST(ImageSOA_TEST, guardar_imagen_no_valido_noexiste) {
   std::string path_imagen = "/path/que/no_mola/nada/no_existe.ppm";

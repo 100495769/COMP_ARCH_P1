@@ -30,7 +30,7 @@ auto main(int argc, char* argv[]) -> int {
     mi_imagen.maxlevel(std::stoi(argv[4]));
   }
   else if (operacion == "resize") {   // primero obtenemos los parametros extra: [4] es ancho, [5] es alto
-    mi_imagen.resize_aos(std::stoi(argv[4]), std::stoi(argv[5]));
+    mi_imagen.resize(std::stoi(argv[4]), std::stoi(argv[5]));
   }
   //else if (operacion == "cutfreq"){
   //  mi_imagen.cutfreq(std::stoi(argv[4]));

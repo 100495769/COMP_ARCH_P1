@@ -379,4 +379,227 @@ TEST(ImageAOS_TEST, maxlevel_valido_pequeño_grande) {
   }
 }
 
+// Tests para la FUNCIÓN RESIZE()----------------------------------------------------------|
+
+TEST(ImageAOS_TEST, interpolation_pixeles_valido) {
+  // check if the interpolation algorithm works as expected
+  // como salida estandar cada variable de la imagen creada.
+  ImageAOS imagen_prueba = crear_imagen_prueba();
+
+  // treating initial pixel vector wrt the coordinates the values are in it
+  // check interpolation in between points (0,1) and (0,0)
+  ImageAOS::CoordenadasAOS coordenadas;
+  ImageAOS::SurroundingColoursAOS surrounding_colours;
+
+  //coordenadas = {0, 0, 1, 0};
+  coordenadas.x_low = 0;
+  coordenadas.y_low = 0;
+  coordenadas.x_high = 1;
+  coordenadas.y_high = 0;
+  imagen_prueba.pixel_assessment(coordenadas, surrounding_colours);
+  auto rg_interpolation = imagen_prueba.interpolation(surrounding_colours, 0.5, 0);
+  ASSERT_EQ(rg_interpolation[0], 127.5);
+  ASSERT_EQ(rg_interpolation[1], 127.5);
+  ASSERT_EQ(rg_interpolation[2], 0);
+
+  // check interpolation in between points (0,0) and (1, 1)
+  //coordenadas = {0, 0, 1, 1};
+  coordenadas.x_low = 0;
+  coordenadas.y_low = 0;
+  coordenadas.x_high = 1;
+  coordenadas.y_high = 1;
+  imagen_prueba.pixel_assessment(coordenadas, surrounding_colours);
+  auto rgb_interpolation = imagen_prueba.interpolation(surrounding_colours, 0.5, 0.5);
+  ASSERT_EQ(rgb_interpolation[0], 127.5);
+  ASSERT_EQ(rgb_interpolation[1], 127.5);
+  ASSERT_EQ(rgb_interpolation[2], 127.5);
+
+  // check interpolation in between points (0,0) and (0, 1)
+  //coordenadas = {0, 0, 0, 1};
+  coordenadas.x_low = 0;
+  coordenadas.y_low = 0;
+  coordenadas.x_high = 0;
+  coordenadas.y_high = 1;
+  imagen_prueba.pixel_assessment(coordenadas, surrounding_colours);
+  auto gb_interpolation = imagen_prueba.interpolation(surrounding_colours, 0, 0.5);
+  ASSERT_EQ(gb_interpolation[0], 127.5);
+  ASSERT_EQ(gb_interpolation[1], 0);
+  ASSERT_EQ(gb_interpolation[2], 127.5);
+}
+
+TEST(ImageAOS_TEST, interpolation_pixeles_invalido) {
+  // check if the interpolation algorithm works as expected
+  // como salida estandar cada variable de la imagen creada.
+  ImageAOS imagen_prueba = crear_imagen_prueba();
+
+  // treating initial pixel vector wrt the coordinates the values are in it
+  // check interpolation in between points (0,1) and (0,0)
+  ImageAOS::CoordenadasAOS coordenadas;
+  ImageAOS::SurroundingColoursAOS surrounding_colours;
+
+  //coordenadas = {0, 0, 1, 0};
+  coordenadas.x_low = 0;
+  coordenadas.y_low = 0;
+  coordenadas.x_high = 1;
+  coordenadas.y_high = 0;
+  imagen_prueba.pixel_assessment(coordenadas, surrounding_colours);
+  auto rg_interpolation = imagen_prueba.interpolation(surrounding_colours, 0.5, 0);
+  ASSERT_NE(rg_interpolation[0], 0);
+  ASSERT_NE(rg_interpolation[1], 0);
+  ASSERT_NE(rg_interpolation[2], 127.5);
+
+  // check interpolation in between points (0,0) and (1, 1)
+  //coordenadas = {0, 0, 1, 1};
+  coordenadas.x_low = 0;
+  coordenadas.y_low = 0;
+  coordenadas.x_high = 1;
+  coordenadas.y_high = 1;
+  imagen_prueba.pixel_assessment(coordenadas, surrounding_colours);
+  auto rgb_interpolation = imagen_prueba.interpolation(surrounding_colours, 0.5, 0.5);
+  ASSERT_NE(rgb_interpolation[0], 0);
+  ASSERT_NE(rgb_interpolation[1], 0);
+  ASSERT_NE(rgb_interpolation[2], 0);
+
+  // check interpolation in between points (0,0) and (0, 1)
+  //coordenadas = {0, 0, 0, 1};
+  coordenadas.x_low = 0;
+  coordenadas.y_low = 0;
+  coordenadas.x_high = 0;
+  coordenadas.y_high = 1;
+  imagen_prueba.pixel_assessment(coordenadas, surrounding_colours);
+  auto gb_interpolation = imagen_prueba.interpolation(surrounding_colours, 0, 0.5);
+  ASSERT_NE(gb_interpolation[0], 0);
+  ASSERT_NE(gb_interpolation[1], 127.5);
+  ASSERT_NE(gb_interpolation[2], 0);
+}
+
+TEST(ImageAOS_TEST, resize_bigger_valido) {
+  // check if the new size rescaled accordingly
+  // como salida estandar cada variable de la imagen creada.
+  ImageAOS imagen_prueba = crear_imagen_prueba();
+
+  imagen_prueba.resize(4, 5);
+  int anch = imagen_prueba.get_ancho();
+  int alt = imagen_prueba.get_alto();
+
+  ASSERT_EQ(anch, 4);
+  ASSERT_EQ(alt, 5);
+}
+
+TEST(ImageAOS_TEST, resize_smaller_valido) {
+  // check if the new size rescaled accordingly
+  // como salida estandar cada variable de la imagen creada.
+  ImageAOS imagen_prueba = crear_imagen_prueba();
+
+  imagen_prueba.resize(1, 1);
+  int anch = imagen_prueba.get_ancho();
+  int alt = imagen_prueba.get_alto();
+
+  ASSERT_EQ(anch, 1);
+  ASSERT_EQ(alt, 1);
+}
+
+TEST(ImageAOS_TEST, resize_bigger_invalido_1) {
+  // check if the new size rescaled accordingly
+  // como salida estandar cada variable de la imagen creada.
+  ImageAOS imagen_prueba = crear_imagen_prueba();
+
+  imagen_prueba.resize(4, 5);
+  int anch = imagen_prueba.get_ancho();
+  int alt = imagen_prueba.get_alto();
+
+  ASSERT_NE(anch, 5);
+  ASSERT_NE(alt, 6);
+}
+
+TEST(ImageAOS_TEST, resize_bigger_invalido_2) {
+  // check if the new size rescaled accordingly
+  // como salida estandar cada variable de la imagen creada.
+  ImageAOS imagen_prueba = crear_imagen_prueba();
+
+  imagen_prueba.resize(4, 5);
+  int anch = imagen_prueba.get_ancho();
+  int alt = imagen_prueba.get_alto();
+
+  ASSERT_NE(anch, 10);
+  ASSERT_NE(alt, 11);
+}
+
+TEST(ImageAOS_TEST, resize_bigger_invalido_3) {
+  // check if the new size rescaled accordingly
+  // como salida estandar cada variable de la imagen creada.
+  ImageAOS imagen_prueba = crear_imagen_prueba();
+
+  imagen_prueba.resize(4, 5);
+  int anch = imagen_prueba.get_ancho();
+  int alt = imagen_prueba.get_alto();
+
+  ASSERT_NE(anch, 3);
+  ASSERT_NE(alt, 4);
+}
+
+TEST(ImageAOS_TEST, resize_bigger_invalido_4) {
+  // check if the new size rescaled accordingly
+  // como salida estandar cada variable de la imagen creada.
+  ImageAOS imagen_prueba = crear_imagen_prueba();
+
+  imagen_prueba.resize(4, 5);
+  int anch = imagen_prueba.get_ancho();
+  int alt = imagen_prueba.get_alto();
+
+  ASSERT_NE(anch, 1);
+  ASSERT_NE(alt, 2);
+}
+
+TEST(ImageAOS_TEST, resize_bigger_invalido_5) {
+  // check if the new size rescaled accordingly
+  // como salida estandar cada variable de la imagen creada.
+  ImageAOS imagen_prueba = crear_imagen_prueba();
+
+  imagen_prueba.resize(4, 5);
+  int anch = imagen_prueba.get_ancho();
+  int alt = imagen_prueba.get_alto();
+
+  ASSERT_NE(anch, 2);
+  ASSERT_NE(alt, 2);
+}
+
+TEST(ImageAOS_TEST, resize_smaller_invalido_1) {
+  // check if the new size rescaled accordingly
+  // como salida estandar cada variable de la imagen creada.
+  ImageAOS imagen_prueba = crear_imagen_prueba();
+
+  imagen_prueba.resize(1, 1);
+  int anch = imagen_prueba.get_ancho();
+  int alt = imagen_prueba.get_alto();
+
+  ASSERT_NE(anch, 2);
+  ASSERT_NE(alt, 2);
+}
+
+TEST(ImageAOS_TEST, resize_smaller_invalido_2) {
+  // check if the new size rescaled accordingly
+  // como salida estandar cada variable de la imagen creada.
+  ImageAOS imagen_prueba = crear_imagen_prueba();
+
+  imagen_prueba.resize(1, 1);
+  int anch = imagen_prueba.get_ancho();
+  int alt = imagen_prueba.get_alto();
+
+  ASSERT_NE(anch, 5);
+  ASSERT_NE(alt, 5);
+}
+
+TEST(ImageAOS_TEST, resize_smaller_invalido_3) {
+  // check if the new size rescaled accordingly
+  // como salida estandar cada variable de la imagen creada.
+  ImageAOS imagen_prueba = crear_imagen_prueba();
+
+  imagen_prueba.resize(1, 1);
+  int anch = imagen_prueba.get_ancho();
+  int alt = imagen_prueba.get_alto();
+
+  ASSERT_NE(anch, 0);
+  ASSERT_NE(alt, 0);
+}
 

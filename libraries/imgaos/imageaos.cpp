@@ -115,7 +115,7 @@ void ImageAOS::maxlevel(int nueva_intensidad) {     // Esta función escala la i
 }
 
 // this function gets the rgb values for the 4 nearby pixels that are going to be interpolated later
-void ImageAOS::pixel_assessment_aos(CoordenadasAOS& coordenadas, SurroundingColoursAOS& surrounding_colours) {
+void ImageAOS::pixel_assessment(CoordenadasAOS& coordenadas, SurroundingColoursAOS& surrounding_colours) {
   // since we store pixels in 2D array flattened into 1D array -> accessing by y*width + x
   // y -> row number (altura), x -> column number (anchura)
   auto ancho_casted = static_cast<size_t>(ancho);
@@ -129,7 +129,7 @@ void ImageAOS::pixel_assessment_aos(CoordenadasAOS& coordenadas, SurroundingColo
   surrounding_colours.high_right = vector_pixeles[coordenadas.y_high * ancho_casted + coordenadas.x_high];
 }
 
-void ImageAOS::copy_contents_aos(std::vector<pixel> nuevo_vector_pixeles) {
+void ImageAOS::copy_contents(std::vector<pixel> nuevo_vector_pixeles) {
 
   vector_pixeles.resize(nuevo_vector_pixeles.size());
   std::ranges::copy(nuevo_vector_pixeles.begin(), nuevo_vector_pixeles.end(), vector_pixeles.begin());
@@ -137,7 +137,7 @@ void ImageAOS::copy_contents_aos(std::vector<pixel> nuevo_vector_pixeles) {
   nuevo_vector_pixeles.clear();
 }
 
-auto ImageAOS::interpolation_aos(SurroundingColoursAOS& surrounding_colours, float x_original, float y_original) -> std::array<float, 3> {
+auto ImageAOS::interpolation(SurroundingColoursAOS& surrounding_colours, float x_original, float y_original) -> std::array<float, 3> {
 
   float frac_part_x = x_original - std::floor(x_original); // calculating the fraction parts
   float frac_part_y = y_original - std::floor(y_original);
@@ -161,7 +161,7 @@ auto ImageAOS::interpolation_aos(SurroundingColoursAOS& surrounding_colours, flo
   return {red_final, green_final, blue_final};
 }
 
-void ImageAOS::resize_aos(int nuevo_ancho, int nuevo_alto) {// Esta función escala el tamaño de la imagen a los nuevos valores de ancho y alto dado.
+void ImageAOS::resize(int nuevo_ancho, int nuevo_alto) {// Esta función escala el tamaño de la imagen a los nuevos valores de ancho y alto dado.
   // proportion in between old a new size
   if (nuevo_ancho <=0 or nuevo_alto <=0) {
     std::cerr << "Nueva altura y anchura no puede ser menor o igual a cero!\n";
@@ -189,9 +189,9 @@ void ImageAOS::resize_aos(int nuevo_ancho, int nuevo_alto) {// Esta función esc
       coordenadas.y_high = static_cast<size_t>(std::ceil(y_original));
 
       SurroundingColoursAOS surrounding_colours;
-      pixel_assessment_aos(coordenadas, surrounding_colours); // filling up the structure of colors for these surrounding pixels
+      pixel_assessment(coordenadas, surrounding_colours); // filling up the structure of colors for these surrounding pixels
       //interpolating colors by x and y axes
-      std::array<float, 3> final_colores = interpolation_aos(surrounding_colours, x_original, y_original);
+      std::array<float, 3> final_colores = interpolation(surrounding_colours, x_original, y_original);
       // filling up new matrices with intepolated colors
       size_t nueva_posicion = (static_cast<size_t>(nuevo_y * nuevo_ancho + nuevo_x));
 
@@ -203,7 +203,7 @@ void ImageAOS::resize_aos(int nuevo_ancho, int nuevo_alto) {// Esta función esc
       nuevo_vector_pixeles[nueva_posicion] = nuevo_pixel;
     }
   }
-  copy_contents_aos(nuevo_vector_pixeles);
+  copy_contents(nuevo_vector_pixeles);
   ancho = nuevo_ancho;
   alto = nuevo_alto;
 }

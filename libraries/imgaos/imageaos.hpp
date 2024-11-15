@@ -26,6 +26,19 @@ class ImageAOS {
   struct pixel{ // cada pixel tiene tres valores
     uint8_t red, green, blue;
   };
+  // Estructura de datos en formato AOS con los pixeles de la imagen
+  std::vector<pixel> vector_pixeles;
+
+  public:
+  // constructor
+  ImageAOS();
+  // Definimos los métodos:
+  void info();
+  void maxlevel(int nueva_intensidad);
+  // Declaramos dos metodos para cargar y guardar la imagen desde el path del archivo
+  void cargar_imagen_aos(std::string & path_imagen);
+  void guardar_imagen_aos(std::string & path_imagen);
+  auto verificar_datos_aos() -> bool;
 
   struct SurroundingColoursAOS {
       pixel low_left;
@@ -41,24 +54,10 @@ class ImageAOS {
       size_t y_high;
   };
 
-  // Estructura de datos en formato AOS con los pixeles de la imagen
-  std::vector<pixel> vector_pixeles;
-
-  public:
-  // constructor
-  ImageAOS();
-  // Definimos los métodos:
-  void info();
-  void maxlevel(int nueva_intensidad);
-  // Declaramos dos metodos para cargar y guardar la imagen desde el path del archivo
-  void cargar_imagen_aos(std::string & path_imagen);
-  void guardar_imagen_aos(std::string & path_imagen);
-  auto verificar_datos_aos() -> bool;
-
-  void resize_aos(int nuevo_ancho, int nuevo_alto);
-  void pixel_assessment_aos(CoordenadasAOS& coordenadas, SurroundingColoursAOS& surrounding_colours);
-  void copy_contents_aos(std::vector<pixel> nuevo_vector_pixeles);
-  auto interpolation_aos(SurroundingColoursAOS& surrounding_colours, float x_original, float y_original) -> std::array<float, 3> ;
+  void resize(int nuevo_ancho, int nuevo_alto);
+  void pixel_assessment(CoordenadasAOS& coordenadas, SurroundingColoursAOS& surrounding_colours);
+  void copy_contents(std::vector<pixel> nuevo_vector_pixeles);
+  auto interpolation(SurroundingColoursAOS& surrounding_colours, float x_original, float y_original) -> std::array<float, 3> ;
 
   auto compress() -> std::tuple<size_t, std::vector<std::string>>;
   /*auto tablaIndices(size_t num, std::unordered_map<std::string, std::string> coloresUnicos)

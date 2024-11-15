@@ -7,6 +7,35 @@
 #include <iostream>
 #include <unordered_map>
 
+auto isInt(std::string value) -> bool {
+  try {
+    std::stoi(value);
+    return true;
+  } catch (const std::exception&) {
+    return false;
+  }
+}
+
+auto validate_resize(int argc, std::vector<std::string> argumentos) -> bool {
+  if (argc !=6) {
+    std::cout << "Error: Invalid number of extra arguments for resize: " << abs(argc - 4);
+    return false;
+  }
+
+  bool int_arg4 = isInt(argumentos[4]);
+  bool int_arg5 = isInt(argumentos[5]);
+
+  if ((!int_arg4) or std::stoi(argumentos[4]) <= 0){
+    std::cout << "Error: Invalid resize width: " << argumentos[4];
+    return false;
+  }
+  if ((!int_arg5) or std::stoi(argumentos[5]) <= 0){
+    std::cout << "Error: Invalid resize heigh: " << argumentos[5];
+    return false;
+  }
+  return true;
+}
+
 auto validate_parameters(int argc, std::vector<std::string> argumentos) -> bool {
   const std::string& operacion = argumentos[3];
 
@@ -15,15 +44,17 @@ auto validate_parameters(int argc, std::vector<std::string> argumentos) -> bool 
   //// ICIAR METE VALORES TUYOS SI LO NECESITAS !!
 
   // gestionamos el tipo de operacion que sea:
-  if ((operacion == "info" && argc != 4) || (operacion == "maxlevel" && argc != 5) ||
-      (operacion == "resize" && argc != 6) ||(operacion == "compress" && argc != 4)) {
+  if ((operacion == "info" && argc != 4) || (operacion == "maxlevel" && argc != 5) ||(operacion == "compress" && argc != 4)) {
     std::cout << "Error: operacion incorrecta o numero de argumentos erroneos\n";
     return false;  // gestionamos que la operacion y el numero de argumentos son correctos
+  }
+
+  if (operacion == "resize") {
+    validate_resize(argc, argumentos);
   }
   // si va bien, devolvemos true
   return true;
 }
-
 
 //calculo de la tabla de indices para la imagen comprimida
 auto tablaIndices(size_t num, std::unordered_map<std::string, std::string> coloresUnicos) -> std::unordered_map<std::string, std::string> {
