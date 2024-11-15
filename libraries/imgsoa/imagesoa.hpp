@@ -8,7 +8,13 @@
 #include <cstdint>
 #include <unordered_map>
 
-
+struct nuevo_hash {
+    size_t operator()(const std::vector<std::uint8_t> & color) const {
+      // Combinación de los hashes de los tres valores
+      // Una posible implementación (ajusta según tus necesidades):
+      return (color[0] << 16) | (color[1] << 8) | color[2];
+    }
+};
 // Aquí irían las declaraciones de funciones, clases, etc.
 // Definimos la clase ImageSOA con sus métodos y atributos
 class ImageSOA {
@@ -19,6 +25,7 @@ class ImageSOA {
   int alto{}; // alto de la imagen en decimal inicializada a 0
   int max_intensidad{}; // máximo valor de intensidad inicializada a 0
   std::vector<uint8_t> red, green, blue;  // Estructura de datos en formato SOA con los pixeles de la imagen
+  bool radar_search(int & pos, int & x, int & y ,std::unordered_map<std::vector<std::uint8_t>,std::vector<std::uint8_t>, nuevo_hash> &parejas_colores, std::unordered_map<std::vector<std::uint8_t>, int, nuevo_hash> & colores );
 
   public:
   // constructor
@@ -58,6 +65,10 @@ class ImageSOA {
       -> std::unordered_map<std::string, std::string>;
   void guardar_compress(std::string const & nombre_fichero, const std::tuple<size_t, std::vector<std::string>>& elem) const ;
 
+  void set_color();
+  void _set_color(int current_pos);
+  int compare(uint8_t r_new, uint8_t g_new, uint8_t b_new, uint8_t r_old, uint8_t g_old,
+              uint8_t b_old);
 };
 
 #endif //COMP_ARCH_LAB1_IMAGESOA_H

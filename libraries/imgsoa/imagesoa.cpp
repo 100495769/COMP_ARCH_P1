@@ -6,6 +6,13 @@
 #include <algorithm>
 #include <bitset>
 //#include <cmake-build-debug/_deps/googletest-src/googletest/src/gtest-internal-inl.h>
+#include "b_tree.hpp"
+#include "calcular_prox_euclideo.hpp"
+#include "imagesoa.hpp"
+
+#include <algorithm>
+#include <chrono>
+#include <cmath>
 #include <complex>
 #include <cstdint>
 #include <fstream>
@@ -17,13 +24,6 @@
 #include <tuple>
 #include <unordered_map>
 #include <vector>
-#include <cstdint>
-#include <algorithm>
-#include <cmath>
-#include <unordered_map>
-#include "imagesoa.hpp"
-#include "b_tree.hpp"
-#include <chrono>
 
 ImageSOA::ImageSOA() = default;
 
@@ -348,44 +348,244 @@ void ImageSOA::guardar_compress(const std::string& nombre_fichero, const std::tu
   }
   archivo.close();
 }
+auto ImageSOA::compare(std::uint8_t  r_new, std::uint8_t  g_new, std::uint8_t  b_new, std::uint8_t  r_old, std::uint8_t  g_old, std::uint8_t  b_old) -> int{
+  // Retornea 2 si el new es mayor, 1 si el old es mayor y 0 si son iguales.
+  auto new_key = std::tie(b_new, g_new, r_new);
+  auto old_key = std::tie(b_old, g_old, r_old);
+
+  if (new_key > old_key) return 2;
+    if (old_key > new_key) return 1;
+    return 0;
+
+}
+
+bool ImageSOA::radar_search(int & pos, int & x, int & y ,std::unordered_map<std::vector<std::uint8_t>,std::vector<std::uint8_t>, nuevo_hash> &parejas_colores, std::unordered_map<std::vector<std::uint8_t>, int, nuevo_hash> & colores ){
+  // Cuando btee compare si da 2 el de la izq> si da 1 el de la der y si da 0 son iguales
+  bool found_color = false;
+  int pos_check = 0;
+  //En nuestra funcion vamos a ir restando de x y sumandole a y.
+      for (int sign_x = -1; sign_x <= 1; sign_x += 2) {
+        for (int sign_y = -1; sign_y <= 1; sign_y += 2) {
+          // Antes de comprobar si ese color existe comprobamos que este la posicion en la imagen. Que sino da errores.
+          pos_check = pos + sign_x * x + sign_y * y * ancho;
+          if ((0 <= pos_check) &&
+              (pos_check <= alto*ancho)) {
+            if (colores[{red[pos_check], green[pos_check], blue[pos_check]}] == 1){
+              parejas_colores[{red[pos], green[pos], blue[pos]}] = {red[pos_check], green[pos_check], blue[pos_check]};
+              found_color = true;
+            }
+          }
+
+          pos_check = pos+y*sign_y+x*sign_x*ancho;
+          if ((0 <= pos_check) &&
+              (pos_check <= alto*ancho)) {
+            if (colores[{red[pos_check], green[pos_check], blue[pos_check]}] == 1){
+              if (found_color == true) {
+                std::uint8_t old_red = parejas_colores[{red[pos], green[pos], blue[pos]}][0];
+                std::uint8_t old_green = parejas_colores[{red[pos], green[pos], blue[pos]}][1];
+                std::uint8_t old_blue = parejas_colores[{red[pos], green[pos], blue[pos]}][2];
+                if(compare(red[pos_check], green[pos_check], blue[pos_check], old_red, old_green, old_blue) == 2){
+                  parejas_colores[{red[pos], green[pos], blue[pos]}] = {
+                    red[pos_check], green[pos_check], blue[pos_check]};
+                }
+              }
+              else {
+                parejas_colores[{red[pos], green[pos], blue[pos]}] = {
+                  red[pos_check], green[pos_check], blue[pos_check]};
+                found_color = true;
+              }
+            }
+          }
+      }
+  }
+  return found_color;
+}
 void ImageSOA::cutfreq(int n) {
+  std::unordered_map<std::vector<std::uint8_t>, int, nuevo_hash> mis_colores;
+  b_tree arbol_de_apariciones;
+  arbol_de_apariciones.rellenar_datos(&red, &blue, &green, ancho, alto);
+  std::vector<int> cantidad_de_repeticiones; // En el 0 los que haya solo una vez. En el 1 los que haya dos veces, etc.
+  std::size_t pixeles_en_imagen = static_cast<size_t>(ImageSOA::ancho*ImageSOA::alto);
+  std::size_t tamaño_repeticiones = 0;
+
+  for(size_t i = 0; i < pixeles_en_imagen; i++){
+    int repeticion = arbol_de_apariciones.insertar(red[i], green[i], blue[i], static_cast<int>(i));
+    //std::cout<<repeticion<<std::endl;
+
+    if (repeticion > cantidad_de_repeticiones.size()){
+      if (tamaño_repeticiones != 0){
+        cantidad_de_repeticiones.back() --;
+      }
+      tamaño_repeticiones++;
+      cantidad_de_repeticiones.push_back(1);
+    }
+    else {
+      if (repeticion != 1) {
+        cantidad_de_repeticiones[repeticion - 1]++;
+        cantidad_de_repeticiones[repeticion - 2]--;
+      } else {
+        cantidad_de_repeticiones[0]++;
+      }
+    }
+    //std::cout<<cantidad_de_repeticiones.size()<<"  "<<cantidad_de_repeticiones[0]<<std::endl;
+  }
+  //Voy a calcular hasta que repeticion me quito.
+  std::size_t i = 0;
+  bool cabe_mas = true;
+  int total_repeticiones = 0;
+  while (i < tamaño_repeticiones){
+    total_repeticiones += cantidad_de_repeticiones[i];
+    i++;
+  }
+  i = 0;
+   std::cout<<"Colores: "<<total_repeticiones<<std::endl;
+
+  while (i < cantidad_de_repeticiones.size() && cabe_mas){
+    std::cout<<"Cantidad de repeticiones para: "<<i<<" "<<cantidad_de_repeticiones[i];
+    if (n > cantidad_de_repeticiones[i]){
+      n -= cantidad_de_repeticiones[i];
+      i++;
+
+    }
+    else {
+      cabe_mas = false;
+    }
+  }
+  std::cout << i<< "  " << cantidad_de_repeticiones.size()<<"acatoy"<<std::endl;
+  if (i >= cantidad_de_repeticiones.size()){
+    std::cerr<<"Cutfreq: hay mas valores a eliminar que colores."<<std::endl;
+    return;
+  }
+  arbol_de_apariciones.in_order_del_unfreq(n, i);
+  std::vector<std::vector<std::uint8_t>> colores_eliminados;
+  std::vector<std::vector<std::uint8_t>> colores_no_eliminados;
+  colores_eliminados = arbol_de_apariciones.lista_colores_eliminados();
+  colores_no_eliminados = arbol_de_apariciones.lista_colores_no_eliminados();
+  std::cout << "Tamaño colores_eliminados: "<< colores_eliminados.size() << " Tamaño colores_no_eliminados: "<<colores_no_eliminados.size()<<std::endl;
+
+  for (auto col: colores_eliminados){
+    mis_colores[col] = 0;
+    //std::cout<<col[0]<<col[1]<<col[2]<<std::endl;
+  }
+  for (auto col : colores_no_eliminados){
+    mis_colores[col] = 1;
+  }
+ std::cout<<mis_colores.size()<<std::endl;
+
+ std::unordered_map<std::vector<std::uint8_t>, std::vector<std::uint8_t>, nuevo_hash> parejas_colores;
+ int colores_restantes = colores_eliminados.size();
+ calcular_prox_euclideo euclideo;
+
+ while (colores_restantes > 0) {
+   std::vector<int> distancias = euclideo.prox_euclideo();
+   for (int pos = 0; pos < ancho * alto; pos++) {
+     int found_color = false;
+     if (mis_colores[{red[pos], green[pos], blue[pos]}] == 0) {
+       found_color = radar_search(pos, distancias[0], distancias[1], parejas_colores, mis_colores);
+       if (found_color == true){
+         colores_restantes --;
+         mis_colores[{red[pos], green[pos], blue[pos]}] = 2;
+       }
+     }
+   }
+ }
+ for (int pos = 0; pos < ancho*alto; pos++){
+   if (mis_colores[{red[pos], green[pos], blue[pos]}] == 2){
+     std::vector<std::uint8_t > pareja = parejas_colores[{red[pos], green[pos], blue[pos]}];
+     red[pos] = pareja[0];
+     green[pos] = pareja[1];
+     blue[pos] = pareja[2];
+   }
+ }
+
+
+  /*
 
   auto start = std::chrono::high_resolution_clock::now();
 
   // En este vector en cada indice cuantos elementos hay repetidos indice veces.
   // Muy útil luego para sacar cosas ya lo comentare bien tod
   b_tree arbol_de_apariciones;
+  arbol_de_apariciones.rellenar_datos(&red, &blue, &green, ancho, alto);
   std::vector<int> cantidad_de_repeticiones; // En el 0 los que haya solo una vez. En el 1 los que haya dos veces, etc.
   std::size_t pixeles_en_imagen = static_cast<size_t>(ImageSOA::ancho*ImageSOA::alto);
-
+  std::size_t tamaño_repeticiones = 0;
 
   for(size_t i = 0; i < pixeles_en_imagen; i++){
-    int repeticion = arbol_de_apariciones.insertar(red[i], green[i], blue[i]);
-    /*
-    if (repeticion != 1){
-      cantidad_de_repeticiones[repeticion-1]++;
-      cantidad_de_repeticiones[repeticion-2]--;
+    int repeticion = arbol_de_apariciones.insertar(red[i], green[i], blue[i], static_cast<int>(i));
+    //std::cout<<repeticion<<std::endl;
+
+    if (repeticion > cantidad_de_repeticiones.size()){
+      if (tamaño_repeticiones != 0){
+        cantidad_de_repeticiones.back() --;
+      }
+      tamaño_repeticiones++;
+      cantidad_de_repeticiones.push_back(1);
     }
-    else{
-      cantidad_de_repeticiones[0];
+    else {
+      if (repeticion != 1) {
+        cantidad_de_repeticiones[repeticion - 1]++;
+        cantidad_de_repeticiones[repeticion - 2]--;
+      } else {
+        cantidad_de_repeticiones[0]++;
+      }
     }
-     */
+    //std::cout<<cantidad_de_repeticiones.size()<<"  "<<cantidad_de_repeticiones[0]<<std::endl;
   }
 
 
   //Voy a calcular hasta que repeticion me quito.
   std::size_t i = 0;
+  bool cabe_mas = true;
   /*
-  while (i < pixeles_en_imagen){
+  int total_repeticiones = 0;
+  while (i < tamaño_repeticiones){
+    total_repeticiones += cantidad_de_repeticiones[i];
+    i++;
+  }
+  i = 0;
+   std::cout<<"Colores: "<<total_repeticiones<<std::endl;
+   */
+/*
+  while (i < cantidad_de_repeticiones.size() && cabe_mas){
+    std::cout<<"Cantidad de repeticiones para: "<<i<<" "<<cantidad_de_repeticiones[i];
+    if (n > cantidad_de_repeticiones[i]){
+      n -= cantidad_de_repeticiones[i];
+      i++;
 
+    }
+    else {
+      cabe_mas = false;
+    }
+  }
 
-  }*/
   auto end = std::chrono::high_resolution_clock::now();
 
   // Calcula la duración
   auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
 
   std::cout << "Tiempo transcurrido: " << duration.count() << " microsegundos" << std::endl;
-  arbol_de_apariciones.in_order_traversal();
+  std::cout << i<< "  " << cantidad_de_repeticiones.size()<<"acatoy"<<std::endl;
+  if (i >= cantidad_de_repeticiones.size()){
+    std::cerr<<"Cutfreq: hay mas valores a eliminar que colores."<<std::endl;
+    return;
+  }
+  else{
+    std::cout<<"si se puede"<<std::endl;
+  }
+
+  arbol_de_apariciones.in_order_del_unfreq(n, i);
+  std::uint8_t red_del = arbol_de_apariciones.red_del;
+  std::uint8_t blue_del = arbol_de_apariciones.blue_del;
+  std::uint8_t green_del = arbol_de_apariciones.green_del;
+  int tamano_imagen = ancho * alto;
+  for (int i = 0; i < tamano_imagen; i++){
+    if (i+1 < tamano_imagen){
+      //Comprobamos el de la derecha.
+
+    }
+  }
+
+  arbol_de_apariciones.in_order_fill_unfreq();*/
 
 }

@@ -33,6 +33,7 @@ auto main(int argc, char* argv[]) -> int {
 
   else if (operacion == "cutfreq"){
     mi_imagen.cutfreq(std::stoi(argv [4]));
+    mi_imagen.guardar_imagen(salida_path);
   }
   // ICIAR :  5) Comprimir
   else if (operacion == "compress") {
