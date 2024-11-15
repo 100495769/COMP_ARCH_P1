@@ -1,7 +1,7 @@
 //
 // Created by sergio on 12/11/24.
 //
-/*
+
 #include "b_tree.hpp"
 #include <cstdint>
 #include <vector>
@@ -48,8 +48,9 @@ void b_tree::rotar_derecha(std::vector<std::unique_ptr<Nodo>*> camino,std::vecto
       (*camino[i-1])->nodo_der = std::move(*nueva_raiz);
     }
   }
-  if ((*nueva_raiz) != nullptr && (*nueva_raiz)->nodo_der != nullptr){
-  (*camino[i])->nodo_izq = std::move((*nueva_raiz)->nodo_der);}
+  if (nueva_raiz && (*nueva_raiz) && (*nueva_raiz)->nodo_der){
+	 (*camino[i])->nodo_izq = std::move((*nueva_raiz)->nodo_der);
+			  }
   // Aqui el clang-tidy da un error que no tiene ningun sentido
   // por eso lo voy a ignorar.
 
@@ -85,7 +86,7 @@ void b_tree::rotar_izquierda(std::vector<std::unique_ptr<Nodo> *> camino, std::v
     }
   }
 
-  if ((*nueva_raiz) != nullptr && (*nueva_raiz)->nodo_izq != nullptr){
+  if (nueva_raiz && (*nueva_raiz) && (*nueva_raiz)->nodo_izq){
     (*camino[i])->nodo_der = std::move((*nueva_raiz)->nodo_izq);
   }
   // Aqui el clang-tidy da un error que no tiene ningun sentido
@@ -225,4 +226,4 @@ void b_tree::rellenar_datos(std::vector<uint8_t> * rojo, std::vector<uint8_t> * 
   ancho_img = ancho;
   alto_img = alto;
   tamano_img = ancho * alto;
-}*/
+}
