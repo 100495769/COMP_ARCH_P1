@@ -31,8 +31,8 @@ auto main(int argc, char* argv[]) -> int {
     mi_imagen.resize(std::stoi(argv[4]), std::stoi(argv[5]));
   }
   else if (operacion == "cutfreq"){
-   // mi_imagen.cutfreq(std::stoi(argv [4]));
-   // mi_imagen.guardar_imagen(salida_path);
+   mi_imagen.cutfreq(std::stoi(argv [4]));
+   mi_imagen.guardar_imagen(salida_path);
   }
   else if (operacion == "compress") {
     std::tuple<size_t, std::vector<std::string>> compresion = mi_imagen.compress();

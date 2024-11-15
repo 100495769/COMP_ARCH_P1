@@ -55,6 +55,11 @@ class ImageSOA {
   };
   void resize(int nuevo_ancho, int nuevo_alto);
   void cutfreq(int n);
+  bool radar_search(size_t & pos, int & x, int & y,
+                    std::unordered_map<std::vector<std::uint8_t>, std::vector<std::uint8_t>, nuevo_hash> & parejas_colores,
+                    std::unordered_map<std::vector<std::uint8_t>, int, nuevo_hash> & colores);
+  int compare(uint8_t r_new, uint8_t g_new, uint8_t b_new, uint8_t r_old, uint8_t g_old,
+              uint8_t b_old);
   void pixel_assessment(CoordenadasSOA& coordenadas, SurroundingColoursSOA& surrounding_colours);
   void copy_contents(std::vector<int> &nuevo_red, std::vector<int> &nuevo_green, std::vector<int> &nuevo_blue);
   auto interpolation(SurroundingColoursSOA& surrounding_colours, float x_original, float y_original) -> std::array<float, 3>;

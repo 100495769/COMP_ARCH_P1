@@ -1,7 +1,7 @@
 //
 // Created by sergio on 12/11/24.
 //
-/*
+
 #include "b_tree.hpp"
 #include <cstdint>
 #include <vector>
@@ -120,7 +120,7 @@ void b_tree::reequilibrar(std::vector<std::unique_ptr<Nodo>*> camino, std::vecto
   }
 }
 
-auto b_tree::insertar(std::uint8_t & r, std::uint8_t & g, std::uint8_t & b, int posicion_color) -> int{
+auto b_tree::insertar(std::uint8_t & r, std::uint8_t & g, std::uint8_t & b, size_t posicion_color) -> std::size_t{
 
   // Tenemos un nodo para iterar por el arbol.
   std::vector<std::unique_ptr<Nodo>*> camino;
@@ -169,36 +169,36 @@ auto b_tree::insertar(std::uint8_t & r, std::uint8_t & g, std::uint8_t & b, int 
   (*nodo_it)->posiciones_colores.push_back(posicion_color);
   return (*nodo_it)->cantidad_elementos;
 }
-auto b_tree::in_order_del_unfreq(int numero_de_frecuencias, int frecuencia_maxima)->void{
+auto b_tree::in_order_del_unfreq(std::size_t numero_de_frecuencias, std::size_t frecuencia_maxima)->void{
   _in_order_del_unfreq(&root, numero_de_frecuencias, frecuencia_maxima);
   std::cout<<"Colores eliminados: "<<colores_eliminados.size()<<" Colores_no_eliminados: "<<colores_no_eliminados.size()<<std::endl;
 }
-auto b_tree::_in_order_del_unfreq(std::unique_ptr<Nodo>* root, int &numero_de_frecuencias, int &frecuencia_maxima) -> void {
+auto b_tree::_in_order_del_unfreq(std::unique_ptr<Nodo>* raiz, std::size_t &numero_de_frecuencias, std::size_t &frecuencia_maxima) -> void {
     // Empty Tree
-    if (*root == nullptr)
+    if (*raiz == nullptr)
         return;
 
     // Recur on the left subtree
-    _in_order_del_unfreq(&(*root)->nodo_izq, numero_de_frecuencias, frecuencia_maxima);
+    _in_order_del_unfreq(&(*raiz)->nodo_izq, numero_de_frecuencias, frecuencia_maxima);
 
     // Visit the current node
     counter++;
-    if ((*root)->cantidad_elementos <= frecuencia_maxima){
-      colores_eliminados.push_back(&(*root));
-      std::cout << counter<< " Color eliminado:" << static_cast<int>((*root)->b) << static_cast<int>((*root)->g)  << static_cast<int>((*root)->r) << std::endl;
+    if ((*raiz)->cantidad_elementos <= frecuencia_maxima){
+      colores_eliminados.push_back(&(*raiz));
+      std::cout << counter<< " Color eliminado:" << static_cast<int>((*raiz)->b) << static_cast<int>((*raiz)->g)  << static_cast<int>((*raiz)->r) << std::endl;
     }
-    else if ((*root)->cantidad_elementos == frecuencia_maxima+1 && numero_de_frecuencias != 0){
+    else if ((*raiz)->cantidad_elementos == frecuencia_maxima+1 && numero_de_frecuencias != 0){
       numero_de_frecuencias--;
-      colores_eliminados.push_back(&(*root));
+      colores_eliminados.push_back(&(*raiz));
 
-      std::cout << counter<< " Color eliminado:" << static_cast<int>((*root)->b) << static_cast<int>((*root)->g)  << static_cast<int>((*root)->r) << std::endl;
+      std::cout << counter<< " Color eliminado:" << static_cast<int>((*raiz)->b) << static_cast<int>((*raiz)->g)  << static_cast<int>((*raiz)->r) << std::endl;
     }
     else{
-      colores_no_eliminados.push_back(&(*root));
+      colores_no_eliminados.push_back(&(*raiz));
     }
 
     // Recur on the right subtree
-    _in_order_del_unfreq(&(*root)->nodo_der, numero_de_frecuencias, frecuencia_maxima);
+    _in_order_del_unfreq(&(*raiz)->nodo_der, numero_de_frecuencias, frecuencia_maxima);
 }
 std::vector<std::vector<std::uint8_t>> b_tree::lista_colores_no_eliminados(){
   std::vector<std::vector<std::uint8_t >> lista;
@@ -216,182 +216,9 @@ std::vector<std::vector<std::uint8_t>> b_tree::lista_colores_eliminados(){
   return lista;
 
 }
-auto b_tree::in_order_fill_unfreq()->void{
-  std::cout<<"Colores eliminados: "<<colores_eliminados.size()<<std::endl;
-  _in_order_fill_unfreq(colores_eliminados, 1);
-  //Coloreamos todos los colores con el color asignado
-  for (int i = 0; i<colores_eliminados.size(); i++){
-    for (int g = 0; g< (*colores_eliminados[i])->cantidad_elementos; g++){
-      (*lista_rojo)[(*colores_eliminados[i])->posiciones_colores[g]] = (*colores_eliminados[i])->r_a;
-      (*lista_azul)[(*colores_eliminados[i])->posiciones_colores[g]] = (*colores_eliminados[i])->g_a;
-      (*lista_verde)[(*colores_eliminados[i])->posiciones_colores[g]] = (*colores_eliminados[i])->b_a;
-    }
-  }
-
-
-}
-void b_tree::_in_order_fill_unfreq(std::vector<std::unique_ptr<Nodo>*> &colores, int tamaño){  // Empty Tree
-  if (colores.size() == 0){
-    return;
-  }
-  std::vector<std::unique_ptr<Nodo>*> colores_restantes;
-  std::vector<std::unique_ptr<Nodo>*> colores_rellenados;
-  for (int i = 0; i < colores.size(); i++) {
-    bool color_found = false;
-    //here was start of the first block of comment
-    int g = 0;
-    while ((color_found == false) && (g < (*colores[i])->cantidad_elementos)){
-      // Vamos a comprobar los adyacentes por cada uno hasta encontrar un color.
-      int pos = (*colores[i])->posiciones_colores[g];
-      //Comprobamos arriba abajo izq derecha.
-      if (pos-ancho_img >= 0) {
-        // Comprobamos que no se salga
-        if ((*lista_rojo)[pos - ancho_img] != red_del ||
-            (*lista_verde)[pos - ancho_img] != green_del ||
-            (*lista_azul)[pos - ancho_img] != blue_del) {
-
-          for (int h = 0; h < (*colores[i])->cantidad_elementos; h += 1) {
-            (*lista_rojo)[(*colores[i])->posiciones_colores[h]] = (*lista_rojo)[pos - ancho_img];
-            (*lista_azul)[(*colores[i])->posiciones_colores[h]] = (*lista_verde)[pos - ancho_img];
-            (*lista_verde)[(*colores[i])->posiciones_colores[h]] = (*lista_azul)[pos - ancho_img];
-            color_found = true;
-          }
-        }
-      }
-      if (pos+ancho_img <= tamano_img) {
-        // Comprobamos que no se salga
-        if ((*lista_rojo)[pos + ancho_img] != red_del ||
-            (*lista_verde)[pos + ancho_img] != green_del ||
-            (*lista_azul)[pos + ancho_img] != blue_del) {
-          for (int h = 0; h < (*colores[i])->cantidad_elementos; h += 1) {
-            (*lista_rojo)[(*colores[i])->posiciones_colores[h]] = (*lista_rojo)[pos + ancho_img];
-            (*lista_azul)[(*colores[i])->posiciones_colores[h]] = (*lista_verde)[pos + ancho_img];
-            (*lista_verde)[(*colores[i])->posiciones_colores[h]] = (*lista_azul)[pos + ancho_img];
-            color_found = true;
-          }
-        }
-      }
-      if (pos-1 >= 0) {
-        // Comprobamos que no se salga
-        if ((*lista_rojo)[pos - 1] != red_del || (*lista_verde)[pos - 1] != green_del ||
-            (*lista_azul)[pos - 1] != blue_del) {
-          for (int h = 0; h < (*colores[i])->cantidad_elementos; h += 1) {
-            (*lista_rojo)[(*colores[i])->posiciones_colores[h]]     = (*lista_rojo)[pos - 1];
-            (*lista_azul)[(*colores[i])->posiciones_colores[h]] = (*lista_verde)[pos - 1];
-            (*lista_verde)[(*colores[i])->posiciones_colores[h]] = (*lista_azul)[pos - 1];
-            color_found = true;
-          }
-        }
-      }
-      if (pos+1 <= tamano_img) {
-        //Comprobamos que no se salga
-        if ((*lista_rojo)[pos + 1] != red_del ||
-            (*lista_verde)[pos + 1] != green_del ||
-            (*lista_azul)[pos + 1] != blue_del) {
-          for (int h = 0; h < (*colores[i])->cantidad_elementos; h+=1){
-            (*lista_rojo)[(*colores[i])->posiciones_colores[h]]     = (*lista_rojo)[pos + 1];
-            (*lista_azul)[(*colores[i])->posiciones_colores[h]]  = (*lista_verde)[pos + 1];
-            (*lista_verde)[(*colores[i])->posiciones_colores[h]]  = (*lista_azul)[pos + 1];
-            color_found = true;
-
-          }
-        }
-      }
-    g++;
-    }
-    //here was the end of the first block of comment
-
-    color_found = radar_search(colores[i], tamaño);
-    tamaño += 1;
-    if (color_found == false){
-      // Si no se ha encontrado el color esperamos al siguiente ciclo.
-      colores_restantes.push_back(colores[i]);
-    }
-    else{
-      colores_rellenados.push_back(colores[i]);
-    }
-    std::cout<<"Colores restantes: "<<colores_restantes.size()<<" Colores rellenados: "<<colores_rellenados.size()<<std::endl;
-  }
-
-
-  std::cout<<"Vuelta hay: "<< colores_restantes.size()<<std::endl;
-  _in_order_fill_unfreq(colores_restantes, tamaño);
-}
-bool b_tree::radar_search(std::unique_ptr<Nodo>* color, int tamaño){
-  int x = tamaño / 2;
-  int y = tamaño /2 + tamaño%2;
-  bool found_color = false;
-  //En nuestra funcion vamos a ir restando de x y sumandole a y.
-  while ((x >= 0) && (found_color == false)) {
-   // std::cout<<x<<"Pipo"<<y<<std::endl;
-    for (int i = 0; i < (*color)->cantidad_elementos; i++) {
-      for (int sign_x = -1; sign_x <= 1; sign_x += 2) {
-        for (int sign_y = -1; sign_y <= 1; sign_y += 2) {
-          // Antes de comprobar si ese color existe comprobamos que este la posicion en la imagen. Que sino da errores.
-          if ((0 <= (*color)->posiciones_colores[i] + sign_x * x + sign_y * y * ancho_img) &&
-              ((*color)->posiciones_colores[i] + sign_x * x + sign_y * y * ancho_img <= tamano_img)) {
-            if ((*lista_rojo)[(*color)->posiciones_colores[i] + sign_x * x + sign_y * y * ancho_img] !=
-                    red_del ||
-                (*lista_verde)[(*color)->posiciones_colores[i] + sign_x * x + sign_y * y * ancho_img] !=
-                    green_del ||
-                (*lista_azul)[(*color)->posiciones_colores[i] + sign_x * x + sign_y * y * ancho_img] !=
-                    blue_del) {
-              if (found_color == false ||
-                  compare((*lista_rojo)[(*color)->posiciones_colores[i] + sign_x * x + sign_y * y * ancho_img],
-                          (*lista_verde)[(*color)->posiciones_colores[i] + sign_x * x + sign_y * y * ancho_img],
-                          (*lista_azul)[(*color)->posiciones_colores[i] + sign_x * x + sign_y * y * ancho_img],
-                          (*color)->r_a, (*color)->g_a, (*color)->b_a) == 2) {
-                (*color)->r_a = (*lista_rojo)[(*color)->posiciones_colores[i] + sign_x * x + sign_y * y * ancho_img];
-                (*color)->g_a = (*lista_verde)[(*color)->posiciones_colores[i] + sign_x * x + sign_y * y * ancho_img];
-                (*color)->b_a = (*lista_azul)[(*color)->posiciones_colores[i] + sign_x * x + sign_y * y * ancho_img];
-                found_color   = true;
-              }
-            }
-          }
-          if ((0 <= (*color)->posiciones_colores[i] + sign_y * y + sign_x * x * ancho_img) &&
-              ((*color)->posiciones_colores[i] + sign_y * y + sign_x * x * ancho_img <=
-               tamano_img)) {
-            if ((*lista_rojo)[(*color)->posiciones_colores[i] + sign_y * y +
-                              sign_x * x * ancho_img] != red_del ||
-                (*lista_verde)[(*color)->posiciones_colores[i] + sign_y * y +
-                               sign_x * x * ancho_img] != green_del ||
-                (*lista_azul)[(*color)->posiciones_colores[i] + sign_y * y +
-                              sign_x * x * ancho_img] != blue_del) {
-              if (found_color == false ||
-                  compare((*lista_rojo)[(*color)->posiciones_colores[i] + sign_y * y +
-                                        sign_x * x * ancho_img],
-                          (*lista_verde)[(*color)->posiciones_colores[i] + sign_y * y +
-                                         sign_x * x * ancho_img],
-                          (*lista_azul)[(*color)->posiciones_colores[i] + sign_y * y +
-                                            sign_x * x * ancho_img],
-                          (*color)->r_a, (*color)->g_a, (*color)->b_a) == 2) {
-                (*color)->r_a = (*lista_rojo)[(*color)->posiciones_colores[i] + sign_y * y +
-                                              sign_x * x * ancho_img];
-                (*color)->g_a = (*lista_verde)[(*color)->posiciones_colores[i] + sign_y * y +
-                                               sign_x * x * ancho_img];
-                (*color)->b_a = (*lista_azul)[(*color)->posiciones_colores[i] + sign_y * y +
-                                              sign_x * x * ancho_img];
-                found_color   = true;
-              }
-            }
-          }
-        }
-      }
-    }
-      x--;
-      y++;
-  }
-  std::cout<<"ENCONTRE"<<std::endl;
-  return found_color;
-
-    // Cuando compruebo lo hago arriba, abajo, izquierda derecha.
-    // Estos tienen la relacion de que abajo y derecha seran con (pos + x,  pos + y) e (pos + y, pos + x)
-    // Y arriba y izquierda seran con (pos - x,  pos - y) e (pos - y, pos - x)
-    // Coincidiran en la diagonal y nose si esto lo explico mejor en el pdf TODO
-  }
 
 void b_tree::rellenar_datos(std::vector<uint8_t> * rojo, std::vector<uint8_t> * verde,
-                             std::vector<uint8_t> * azul, int &ancho, int &alto) {
+                             std::vector<uint8_t> * azul, size_t &ancho, size_t &alto) {
   lista_rojo = rojo;
   lista_verde = verde;
   lista_azul = azul;
@@ -399,4 +226,3 @@ void b_tree::rellenar_datos(std::vector<uint8_t> * rojo, std::vector<uint8_t> * 
   alto_img = alto;
   tamano_img = ancho * alto;
 }
-*/

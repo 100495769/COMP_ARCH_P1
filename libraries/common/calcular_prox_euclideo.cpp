@@ -3,49 +3,63 @@
 //
 #include "calcular_prox_euclideo.hpp"
 #include <iostream>
-/*
+
 int calcular_prox_euclideo::my_pow(int a){
   return a*a;
 }
 
+
 void calcular_prox_euclideo::añadir_euclideos() {
-  int desajuste = 0;
-  int max_tamaño_actual = 2 * my_pow(tamaño);
-  int mi_tamaño = 0;
-  int mi_tamaño_dic = 99999;
-  std::cout<<"Restos: "<<restos[tamaño].size()<<std::endl;
-  for (int i = 0; i< restos[tamaño].size() + tamaño; i++){
-      mi_tamaño = (my_pow(tamaño + desajuste) + my_pow(tamaño-desajuste));
-      if (restos[tamaño].size() > 0) {
-        mi_tamaño_dic =
-            my_pow(restos[tamaño-1][i - desajuste][0]) * my_pow(restos[tamaño-1][i - desajuste][1]);
+  size_t tamaño_dict = restos[tamaño].size();
+  int desajuste = tamaño_y;
+  int resto_x = 0;
+  int resto_y = 0;
+  int mi_x = 0;
+  int mi_y = 0;
+  int resto_val = 0;
+  int mi_val = 0;
+  int tamaño_max = my_pow(tamaño_x) + my_pow(tamaño_y);
+  for (int i = 0; i < static_cast<int>(tamaño_dict) + tamaño_y; i++){
+    resto_x = restos[tamaño][static_cast<size_t>(i-tamaño_y+desajuste)][0];
+    resto_y = restos[tamaño][static_cast<size_t>(i-tamaño_y+desajuste)][1];
+    mi_x = tamaño_x + desajuste;
+    mi_y = tamaño_y - desajuste;
+    resto_val = my_pow(resto_x) + my_pow(resto_y);
+    mi_val = my_pow(mi_x)+ my_pow(mi_y);
+    if(resto_val > mi_val){
+      if (resto_val > tamaño_max){
+        restos[tamaño + 1].push_back({resto_x, resto_y});
       }
-     if ( mi_tamaño <= mi_tamaño_dic){
-       desajuste++;
-       if (mi_tamaño <= max_tamaño_actual){
-         std::cout <<"Mi tamaño euclides:"<< tamaño+desajuste<<" "<<tamaño-desajuste<<std::endl;
-         prox_euclides.push({tamaño+desajuste, tamaño-desajuste});
-       }
-       else {
-         // Lo metemos al diccionario para el siguiente.
-         restos[tamaño].push_back({my_pow(tamaño + desajuste), my_pow(tamaño - desajuste)});
-       }
-     }
-     else{
-       if (mi_tamaño_dic <= max_tamaño_actual){
-         prox_euclides.push({restos[tamaño][i-desajuste][0], restos[tamaño][i-desajuste][1]});
-         std::cout << "Mi tamaño euclides:"<< restos[tamaño][i-desajuste][0]<<" "<<restos[tamaño][i-desajuste][1]<<std::endl;
-       }
-       else {
-         restos[tamaño].push_back({restos[tamaño][i-desajuste][0], restos[tamaño][i-desajuste][1]});
-       }
-     }
+      else{
+        prox_euclides.push({resto_x, resto_y});
+      }
+    }
+    else{
+      if (mi_val>tamaño_max){
+        restos[tamaño + 1].push_back({mi_x, mi_y});
+      }
+      else{
+        prox_euclides.push({mi_x, mi_y});
+      }
+    }
   }
 }
-
+void calcular_prox_euclideo::init(){
+  prox_euclides.push({1,0});
+  prox_euclides.push({1,1});
+  restos[3].push_back({2,0});
+  tamaño_x = 1;
+  tamaño_y = 1;
+}
 std::vector<int> calcular_prox_euclideo::prox_euclideo() {
-  if (prox_euclides.size() < 1){
-    tamaño += 1;
+  if (prox_euclides.empty()){
+    if (tamaño_x == tamaño_y){
+      tamaño_x++;
+    }
+    else{
+      tamaño_y++;
+    }
+    tamaño = tamaño_y+tamaño_x; // En verdad tamaño ++ pero asi es mas visual.
     std::cout<<"Mi tamaño: "<<tamaño<<std::endl;
     añadir_euclideos();
 
@@ -55,4 +69,3 @@ std::vector<int> calcular_prox_euclideo::prox_euclideo() {
   prox_euclides.pop();
   return mi_return;
 };
-*/

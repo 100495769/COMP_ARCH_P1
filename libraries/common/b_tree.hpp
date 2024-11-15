@@ -8,7 +8,6 @@
 #include <cstdint>
 #include <vector>
 #include <memory>
-/*
 class b_tree {
 
   private:
@@ -18,8 +17,8 @@ class b_tree {
         // Lo de abajo es el color asignado.
         std::uint8_t r_a, g_a, b_a;
         std::vector<std::uint8_t*> direcciones_colores;
-        std::vector<int> posiciones_colores;
-        int cantidad_elementos = {1};
+        std::vector<size_t> posiciones_colores;
+        std::size_t cantidad_elementos = {1};
         int altura_nodo_izq = {0};
         int altura_nodo_der = {0};
         std::unique_ptr<Nodo> nodo_izq = {nullptr};
@@ -29,9 +28,9 @@ class b_tree {
     // Raiz que esta vacia
     std::unique_ptr<Nodo> root = nullptr;
     std::vector<std::uint8_t>*lista_rojo, *lista_verde, *lista_azul;
-    int ancho_img;
-    int alto_img;
-    int tamano_img;
+    size_t ancho_img;
+    size_t alto_img;
+    size_t tamano_img;
     int counter = 0;
     std::vector<std::unique_ptr<Nodo>*> colores_eliminados;
     std::vector<std::unique_ptr<Nodo>*> colores_no_eliminados;
@@ -42,7 +41,7 @@ class b_tree {
     void reequilibrar(std::vector<std::unique_ptr<Nodo>*> camino, std::vector<int> direcciones);
     void rotar_derecha(std::vector<std::unique_ptr<Nodo>*> camino,std::vector<int> direcciones, std::size_t i);
     void rotar_izquierda(std::vector<std::unique_ptr<Nodo>*> camino,std::vector<int> direcciones, std::size_t i);
-    auto _in_order_del_unfreq(std::unique_ptr<Nodo>* root, int &numero_de_frecuencias, int &frecuencia_maxima) -> void;
+    auto _in_order_del_unfreq(std::unique_ptr<Nodo>* raiz, std::size_t &numero_de_frecuencias, std::size_t &frecuencia_maxima) -> void;
     void _in_order_fill_unfreq(std::vector<std::unique_ptr<Nodo>*> &colores, int tamaño);
 
 
@@ -51,15 +50,14 @@ class b_tree {
   public:
     // Esta funcion nos retorneara cuantas apariciones han habido de ese elemento en total.
     // Si es la primera vez que llega pues hay 1. La segunda: 2. Etc....
-    void rellenar_datos(std::vector<uint8_t> *rojo,std::vector<uint8_t> *verde, std::vector<uint8_t> *azul, int &ancho, int &alto);
+    void rellenar_datos(std::vector<uint8_t> *rojo,std::vector<uint8_t> *verde, std::vector<uint8_t> *azul, size_t &ancho, size_t &alto);
     std::uint8_t red_del, green_del, blue_del;
-    auto insertar(std::uint8_t & r, std::uint8_t & g, std::uint8_t & b, int posicion_color) -> int;
-    void in_order_del_unfreq(int numero_de_frecuencias, int frecuencia_maxima);
+    auto insertar(std::uint8_t & r, std::uint8_t & g, std::uint8_t & b, size_t posicion_color) -> size_t;
+    void in_order_del_unfreq(std::size_t numero_de_frecuencias, std::size_t frecuencia_maxima);
     void in_order_fill_unfreq();
     bool radar_search(std::unique_ptr<Nodo> *color, int tamaño);
     std::vector<std::vector<std::uint8_t>> lista_colores_no_eliminados();
     std::vector<std::vector<std::uint8_t>> lista_colores_eliminados();
     auto compare(std::uint8_t  r_new, std::uint8_t  g_new, std::uint8_t b_new, std::uint8_t  r_old, std::uint8_t  g_old, std::uint8_t b_old) -> int;
 };
-*/
 #endif  // IMTOOL_B_TREE_H
