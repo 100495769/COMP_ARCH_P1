@@ -163,9 +163,6 @@ auto ImageAOS::interpolation(SurroundingColoursAOS& surrounding_colours, float x
 
 void ImageAOS::resize(int nuevo_ancho, int nuevo_alto) {// Esta función escala el tamaño de la imagen a los nuevos valores de ancho y alto dado.
   // proportion in between old a new size
-  if (nuevo_ancho <=0 or nuevo_alto <=0) {
-    std::cerr << "Nueva altura y anchura no puede ser menor o igual a cero!\n";
-  }
   float proporcion_anchura = static_cast<float>(ancho)/static_cast<float>(nuevo_ancho);
   float proporcion_altura = static_cast<float>(alto)/static_cast<float>(nuevo_alto);
 
