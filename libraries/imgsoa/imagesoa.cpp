@@ -339,8 +339,8 @@ auto ImageSOA::compare(std::uint8_t  r_new, std::uint8_t  g_new, std::uint8_t  b
 
 }
 
-bool ImageSOA::radar_search(size_t & pos, int & x, int & y ,std::unordered_map<std::vector<std::uint8_t>, std::vector<std::uint8_t>, nuevo_hash> & parejas_colores,
-                            std::unordered_map<std::vector<std::uint8_t>, int, nuevo_hash> & colores){
+auto ImageSOA::radar_search(size_t & pos, int & x, int & y ,std::unordered_map<std::vector<std::uint8_t>, std::vector<std::uint8_t>, nuevo_hash> & parejas_colores,
+                            std::unordered_map<std::vector<std::uint8_t>, int, nuevo_hash> & colores) -> bool{
   // Cuando btee compare si da 2 el de la izq> si da 1 el de la der y si da 0 son iguales
   bool found_color = false;
   int pos_check = 0;
@@ -383,14 +383,14 @@ bool ImageSOA::radar_search(size_t & pos, int & x, int & y ,std::unordered_map<s
 }
 
 void ImageSOA::cutfreq(int m) {
-  std::size_t n = static_cast<size_t>(m);
+  auto n = static_cast<size_t>(m);
   std::unordered_map<std::vector<std::uint8_t>, int, nuevo_hash> mis_colores;
 
   b_tree arbol_de_apariciones;
   arbol_de_apariciones.rellenar_datos(&red, &blue, &green, static_cast<size_t>(ancho),
                                       static_cast<size_t>(alto));
   std::vector<size_t> cantidad_de_repeticiones;  // En el 0 los que haya solo una vez. En el 1 los que haya dos veces, etc.
-  std::size_t pixeles_en_imagen   = static_cast<size_t>(ancho * alto);
+  auto pixeles_en_imagen   = static_cast<size_t>(ancho * alto);
   std::size_t tamaño_repeticiones = 0;
 
   for (size_t i = 0; i < pixeles_en_imagen; i++) {

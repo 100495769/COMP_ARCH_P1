@@ -4,7 +4,7 @@
 #include "calcular_prox_euclideo.hpp"
 #include <iostream>
 
-int calcular_prox_euclideo::my_pow(int a){
+auto calcular_prox_euclideo::my_pow(int a) -> int{
   return a*a;
 }
 
@@ -61,7 +61,7 @@ void calcular_prox_euclideo::init(){
   tamaño_x = 1;
   tamaño_y = 1;
 }
-std::vector<int> calcular_prox_euclideo::prox_euclideo() {
+auto calcular_prox_euclideo::prox_euclideo() -> std::vector<int> {
   if (prox_euclides.empty()){
     if (tamaño_x == tamaño_y){
       tamaño_x++;

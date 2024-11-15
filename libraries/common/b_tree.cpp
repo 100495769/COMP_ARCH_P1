@@ -200,7 +200,7 @@ auto b_tree::_in_order_del_unfreq(std::unique_ptr<Nodo>* raiz, std::size_t &nume
     // Recur on the right subtree
     _in_order_del_unfreq(&(*raiz)->nodo_der, numero_de_frecuencias, frecuencia_maxima);
 }
-std::vector<std::vector<std::uint8_t>> b_tree::lista_colores_no_eliminados(){
+auto b_tree::lista_colores_no_eliminados() -> std::vector<std::vector<std::uint8_t>> {
   std::vector<std::vector<std::uint8_t >> lista;
   for (auto & col: colores_no_eliminados){
     lista.push_back({(*col)->r, (*col)->g, (*col)->b});
@@ -208,7 +208,7 @@ std::vector<std::vector<std::uint8_t>> b_tree::lista_colores_no_eliminados(){
   return lista;
 
 }
-std::vector<std::vector<std::uint8_t>> b_tree::lista_colores_eliminados(){
+auto b_tree::lista_colores_eliminados() -> std::vector<std::vector<std::uint8_t>>{
   std::vector<std::vector<std::uint8_t >> lista;
   for (auto & col: colores_eliminados){
     lista.push_back({(*col)->r, (*col)->g, (*col)->b});

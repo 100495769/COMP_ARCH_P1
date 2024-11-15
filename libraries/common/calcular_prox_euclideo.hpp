@@ -20,10 +20,10 @@ class calcular_prox_euclideo {
     // Lista con los valores de euclides que van a ir saliendo;
     std::queue<std::vector<int>> prox_euclides;
     void añadir_euclideos();
-    int my_pow(int a);
+    auto my_pow(int a) -> int;
 
   public:
-    std::vector<int>prox_euclideo();
+    auto prox_euclideo() -> std::vector<int>;
     void init();
 
 };
