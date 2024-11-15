@@ -4,6 +4,7 @@
 
 #ifndef IMTOOL_CALCULAR_PROX_EUCLIDEO_HPP
 #define IMTOOL_CALCULAR_PROX_EUCLIDEO_HPP
+/*
 #include <cstdint>
 #include <vector>
 #include <queue>
@@ -24,5 +25,5 @@ class calcular_prox_euclideo {
   public:
     std::vector<int>prox_euclideo();
 };
-
+*/
 #endif  // IMTOOL_CALCULAR_PROX_EUCLIDEO_HPP

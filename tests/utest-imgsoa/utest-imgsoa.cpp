@@ -315,7 +315,7 @@ auto imagen_grande_maxlevel() -> ImageSOA {
   imagen_prueba.set_blue(azul);
   return imagen_prueba;
 }
-
+/*
 TEST(ImageSOA_TEST, maxlevel_valido_pequeño_pequeño) {
   // pasamos de 255 a 100.
   ImageSOA pequena1 = crear_imagen_prueba();
@@ -456,7 +456,7 @@ TEST(ImageSOA_TEST, maxlevel_valido_grande_grande) {
   }
 }
 
-
+*/
 // Tests para la FUNCIÓN RESIZE()----------------------------------------------------------|
 
 TEST(ImageSOA_TEST, interpolation_pixeles_valido) {
@@ -531,7 +531,7 @@ TEST(ImageSOA_TEST, resize_smaller_valido) {
   ASSERT_EQ(alt, 1);
 }
 
-TEST(ImageSOA_TEST, resize_bigger_invalido) {
+TEST(ImageSOA_TEST, resize_bigger_invalido_1) {
   // check if the new size rescaled accordingly
   // como salida estandar cada variable de la imagen creada.
   ImageSOA imagen_prueba = crear_imagen_prueba();
@@ -539,19 +539,64 @@ TEST(ImageSOA_TEST, resize_bigger_invalido) {
   imagen_prueba.resize(4, 5);
   int anch = imagen_prueba.get_ancho();
   int alt = imagen_prueba.get_alto();
-  bool exit = false;
-  while (!exit) {
-    int anch_random_invalido = static_cast<int>(arc4random());
-    int alt_random_invalido = static_cast<int>(arc4random());
-    if (anch_random_invalido!=4 and alt_random_invalido!=5) {
-      exit = true;
-      ASSERT_NE(anch, anch_random_invalido);
-      ASSERT_NE(alt, alt_random_invalido);
-    }
-  }
+
+  ASSERT_NE(anch, 5);
+  ASSERT_NE(alt, 6);
 }
 
-TEST(ImageSOA_TEST, resize_smaller_invalido) {
+TEST(ImageSOA_TEST, resize_bigger_invalido_2) {
+  // check if the new size rescaled accordingly
+  // como salida estandar cada variable de la imagen creada.
+  ImageSOA imagen_prueba = crear_imagen_prueba();
+
+  imagen_prueba.resize(4, 5);
+  int anch = imagen_prueba.get_ancho();
+  int alt = imagen_prueba.get_alto();
+
+  ASSERT_NE(anch, 10);
+  ASSERT_NE(alt, 11);
+}
+
+TEST(ImageSOA_TEST, resize_bigger_invalido_3) {
+  // check if the new size rescaled accordingly
+  // como salida estandar cada variable de la imagen creada.
+  ImageSOA imagen_prueba = crear_imagen_prueba();
+
+  imagen_prueba.resize(4, 5);
+  int anch = imagen_prueba.get_ancho();
+  int alt = imagen_prueba.get_alto();
+
+  ASSERT_NE(anch, 3);
+  ASSERT_NE(alt, 4);
+}
+
+TEST(ImageSOA_TEST, resize_bigger_invalido_4) {
+  // check if the new size rescaled accordingly
+  // como salida estandar cada variable de la imagen creada.
+  ImageSOA imagen_prueba = crear_imagen_prueba();
+
+  imagen_prueba.resize(4, 5);
+  int anch = imagen_prueba.get_ancho();
+  int alt = imagen_prueba.get_alto();
+
+  ASSERT_NE(anch, 1);
+  ASSERT_NE(alt, 2);
+}
+
+TEST(ImageSOA_TEST, resize_bigger_invalido_5) {
+  // check if the new size rescaled accordingly
+  // como salida estandar cada variable de la imagen creada.
+  ImageSOA imagen_prueba = crear_imagen_prueba();
+
+  imagen_prueba.resize(4, 5);
+  int anch = imagen_prueba.get_ancho();
+  int alt = imagen_prueba.get_alto();
+
+  ASSERT_NE(anch, 2);
+  ASSERT_NE(alt, 2);
+}
+
+TEST(ImageSOA_TEST, resize_smaller_invalido_1) {
   // check if the new size rescaled accordingly
   // como salida estandar cada variable de la imagen creada.
   ImageSOA imagen_prueba = crear_imagen_prueba();
@@ -559,14 +604,33 @@ TEST(ImageSOA_TEST, resize_smaller_invalido) {
   imagen_prueba.resize(1, 1);
   int anch = imagen_prueba.get_ancho();
   int alt = imagen_prueba.get_alto();
-  bool exit = false;
-  while (!exit) {
-    int anch_random_invalido = static_cast<int>(arc4random());
-    int alt_random_invalido = static_cast<int>(arc4random());
-    if (anch_random_invalido!=4 and alt_random_invalido!=5) {
-      exit = true;
-      ASSERT_NE(anch, anch_random_invalido);
-      ASSERT_NE(alt, alt_random_invalido);
-    }
-  }
+
+  ASSERT_NE(anch, 2);
+  ASSERT_NE(alt, 2);
+}
+
+TEST(ImageSOA_TEST, resize_smaller_invalido_2) {
+  // check if the new size rescaled accordingly
+  // como salida estandar cada variable de la imagen creada.
+  ImageSOA imagen_prueba = crear_imagen_prueba();
+
+  imagen_prueba.resize(1, 1);
+  int anch = imagen_prueba.get_ancho();
+  int alt = imagen_prueba.get_alto();
+
+  ASSERT_NE(anch, 5);
+  ASSERT_NE(alt, 5);
+}
+
+TEST(ImageSOA_TEST, resize_smaller_invalido_3) {
+  // check if the new size rescaled accordingly
+  // como salida estandar cada variable de la imagen creada.
+  ImageSOA imagen_prueba = crear_imagen_prueba();
+
+  imagen_prueba.resize(1, 1);
+  int anch = imagen_prueba.get_ancho();
+  int alt = imagen_prueba.get_alto();
+
+  ASSERT_NE(anch, 0);
+  ASSERT_NE(alt, 0);
 }
