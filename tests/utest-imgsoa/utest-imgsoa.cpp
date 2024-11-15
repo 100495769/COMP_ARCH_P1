@@ -490,6 +490,52 @@ TEST(ImageSOA_TEST, interpolation_pixeles_valido) {
   ASSERT_EQ(gb_interpolation[2], 127.5);
 }
 
+TEST(ImageSOA_TEST, interpolation_pixeles_invalido) {
+  // check if the interpolation algorithm works as expected
+  // como salida estandar cada variable de la imagen creada.
+  ImageSOA imagen_prueba = crear_imagen_prueba();
+
+  // treating initial pixel vector wrt the coordinates the values are in it
+  // check interpolation in between points (0,1) and (0,0)
+  ImageSOA::CoordenadasSOA coordenadas;
+  ImageSOA::SurroundingColoursSOA surrounding_colours;
+
+  //coordenadas = {0, 0, 1, 0};
+  coordenadas.x_low = 0;
+  coordenadas.y_low = 0;
+  coordenadas.x_high = 1;
+  coordenadas.y_high = 0;
+  imagen_prueba.pixel_assessment(coordenadas, surrounding_colours);
+  auto rg_interpolation = imagen_prueba.interpolation(surrounding_colours, 0.5, 0);
+  ASSERT_NE(rg_interpolation[0], 0);
+  ASSERT_NE(rg_interpolation[1], 0);
+  ASSERT_NE(rg_interpolation[2], 127.5);
+
+  // check interpolation in between points (0,0) and (1, 1)
+  //coordenadas = {0, 0, 1, 1};
+  coordenadas.x_low = 0;
+  coordenadas.y_low = 0;
+  coordenadas.x_high = 1;
+  coordenadas.y_high = 1;
+  imagen_prueba.pixel_assessment(coordenadas, surrounding_colours);
+  auto rgb_interpolation = imagen_prueba.interpolation(surrounding_colours, 0.5, 0.5);
+  ASSERT_NE(rgb_interpolation[0], 0);
+  ASSERT_NE(rgb_interpolation[1], 0);
+  ASSERT_NE(rgb_interpolation[2], 0);
+
+  // check interpolation in between points (0,0) and (0, 1)
+  //coordenadas = {0, 0, 0, 1};
+  coordenadas.x_low = 0;
+  coordenadas.y_low = 0;
+  coordenadas.x_high = 0;
+  coordenadas.y_high = 1;
+  imagen_prueba.pixel_assessment(coordenadas, surrounding_colours);
+  auto gb_interpolation = imagen_prueba.interpolation(surrounding_colours, 0, 0.5);
+  ASSERT_NE(gb_interpolation[0], 0);
+  ASSERT_NE(gb_interpolation[1], 127.5);
+  ASSERT_NE(gb_interpolation[2], 0);
+}
+
 TEST(ImageSOA_TEST, resize_bigger_valido) {
   // check if the new size rescaled accordingly
   // como salida estandar cada variable de la imagen creada.
