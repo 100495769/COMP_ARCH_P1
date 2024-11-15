@@ -27,12 +27,13 @@ auto main(int argc, char* argv[]) -> int {
   else if (operacion == "maxlevel") {  // la posicion 4 del vector de argumentos es la nueva intensidad. lo pasamos a entero
     mi_imagen.maxlevel(std::stoi(argv[4]));
   }
-  else if (operacion == "resize") {   // primero obtenemos los parametros extra: [4] es ancho, [5] es alto
+  else if (operacion == "resize") {
+    // primero obtenemos los parametros extra: [4] es ancho, [5] es alto
     mi_imagen.resize(std::stoi(argv[4]), std::stoi(argv[5]));
   }
   else if (operacion == "cutfreq"){
-   mi_imagen.cutfreq(std::stoi(argv [4]));
-   mi_imagen.guardar_imagen(salida_path);
+   //mi_imagen.cutfreq(std::stoi(argv [4]));
+   //mi_imagen.guardar_imagen(salida_path);
   }
   else if (operacion == "compress") {
     std::tuple<size_t, std::vector<std::string>> compresion = mi_imagen.compress();

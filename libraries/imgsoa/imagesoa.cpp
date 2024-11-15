@@ -328,6 +328,7 @@ void ImageSOA::guardar_compress(const std::string& nombre_fichero, const std::tu
   }
   archivo.close();
 }
+/*
 auto ImageSOA::compare(std::uint8_t  r_new, std::uint8_t  g_new, std::uint8_t  b_new, std::uint8_t  r_old, std::uint8_t  g_old, std::uint8_t  b_old) -> int{
   // Retornea 2 si el new es mayor, 1 si el old es mayor y 0 si son iguales.
   auto new_key = std::tie(b_new, g_new, r_new);
@@ -480,7 +481,7 @@ void ImageSOA::cutfreq(int m) {
   }
 }
 
-/*
+// start of the commented block
   auto start = std::chrono::high_resolution_clock::now();
 
   // En este vector en cada indice cuantos elementos hay repetidos indice veces.
@@ -579,3 +580,4 @@ void ImageSOA::cutfreq(int m) {
 
   arbol_de_apariciones.in_order_fill_unfreq();
   */
+

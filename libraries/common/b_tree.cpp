@@ -1,7 +1,7 @@
 //
 // Created by sergio on 12/11/24.
 //
-
+/*
 #include "b_tree.hpp"
 #include <cstdint>
 #include <vector>
@@ -225,4 +225,4 @@ void b_tree::rellenar_datos(std::vector<uint8_t> * rojo, std::vector<uint8_t> * 
   ancho_img = ancho;
   alto_img = alto;
   tamano_img = ancho * alto;
-}
+}*/
