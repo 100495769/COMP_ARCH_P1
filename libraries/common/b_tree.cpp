@@ -172,7 +172,7 @@ auto b_tree::insertar(std::uint8_t & r, std::uint8_t & g, std::uint8_t & b, size
 }
 auto b_tree::in_order_del_unfreq(std::size_t numero_de_frecuencias, std::size_t frecuencia_maxima)->void{
   _in_order_del_unfreq(&root, numero_de_frecuencias, frecuencia_maxima);
-  std::cout<<"Colores eliminados: "<<colores_eliminados.size()<<" Colores_no_eliminados: "<<colores_no_eliminados.size()<<std::endl;
+  //std::cout<<"Colores eliminados: "<<colores_eliminados.size()<<" Colores_no_eliminados: "<<colores_no_eliminados.size()<<std::endl;
 }
 auto b_tree::_in_order_del_unfreq(std::unique_ptr<Nodo>* raiz, std::size_t &numero_de_frecuencias, std::size_t &frecuencia_maxima) -> void {
     // Empty Tree
@@ -186,13 +186,13 @@ auto b_tree::_in_order_del_unfreq(std::unique_ptr<Nodo>* raiz, std::size_t &nume
     counter++;
     if ((*raiz)->cantidad_elementos <= frecuencia_maxima){
       colores_eliminados.push_back(&(*raiz));
-      std::cout << counter<< " Color eliminado:" << static_cast<int>((*raiz)->b) << static_cast<int>((*raiz)->g)  << static_cast<int>((*raiz)->r) << std::endl;
+      //std::cout << counter<< " Color eliminado:" << static_cast<int>((*raiz)->b) << static_cast<int>((*raiz)->g)  << static_cast<int>((*raiz)->r) << std::endl;
     }
     else if ((*raiz)->cantidad_elementos == frecuencia_maxima + 1 && numero_de_frecuencias > 0){
       numero_de_frecuencias--;
       colores_eliminados.push_back(&(*raiz));
 
-      std::cout << counter<< " Color eliminado:" << static_cast<int>((*raiz)->b) << static_cast<int>((*raiz)->g)  << static_cast<int>((*raiz)->r) << std::endl;
+      //std::cout << counter<< " Color eliminado:" << static_cast<int>((*raiz)->b) << static_cast<int>((*raiz)->g)  << static_cast<int>((*raiz)->r) << std::endl;
     }
     else{
       colores_no_eliminados.push_back(&(*raiz));

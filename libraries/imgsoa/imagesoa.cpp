@@ -405,7 +405,6 @@ void ImageSOA::cutfreq(int m) {
         cantidad_de_repeticiones[0]++;
       }
     }
-    // std::cout<<cantidad_de_repeticiones.size()<<"  "<<cantidad_de_repeticiones[0]<<std::endl;
   }
   // Voy a calcular hasta que repeticion me quito.
   std::size_t i          = 0;
@@ -419,7 +418,6 @@ void ImageSOA::cutfreq(int m) {
   std::cout << "Colores: " << total_repeticiones << std::endl;
 
   while (i < cantidad_de_repeticiones.size() && cabe_mas) {
-    std::cout << "Cantidad de repeticiones para: " << i << " " << cantidad_de_repeticiones[i];
     if (n > cantidad_de_repeticiones[i]) {
       n -= cantidad_de_repeticiones[i];
       i++;
@@ -428,7 +426,6 @@ void ImageSOA::cutfreq(int m) {
       cabe_mas = false;
     }
   }
-  std::cout << i << "  " << n <<" "<< cantidad_de_repeticiones.size() << "acatoy" << std::endl;
   if (i >= cantidad_de_repeticiones.size()) {
     std::cerr << "Cutfreq: hay mas valores a eliminar que colores." << std::endl;
     return;
@@ -443,10 +440,8 @@ void ImageSOA::cutfreq(int m) {
 
   for (auto col : colores_eliminados) {
     mis_colores[col] = 0;
-    // std::cout<<col[0]<<col[1]<<col[2]<<std::endl;
   }
   for (auto col : colores_no_eliminados) { mis_colores[col] = 1; }
-  std::cout << mis_colores.size() << std::endl;
 
   std::unordered_map<std::vector<std::uint8_t>, std::vector<std::uint8_t>, nuevo_hash>
       parejas_colores;
