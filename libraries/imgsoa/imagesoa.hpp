@@ -25,7 +25,6 @@ class ImageSOA {
   int alto{}; // alto de la imagen en decimal inicializada a 0
   int max_intensidad{}; // máximo valor de intensidad inicializada a 0
   std::vector<uint8_t> red, green, blue;  // Estructura de datos en formato SOA con los pixeles de la imagen
-  bool radar_search(int & pos, int & x, int & y ,std::unordered_map<std::vector<std::uint8_t>,std::vector<std::uint8_t>, nuevo_hash> &parejas_colores, std::unordered_map<std::vector<std::uint8_t>, int, nuevo_hash> & colores );
 
   public:
   // constructor
@@ -60,15 +59,28 @@ class ImageSOA {
   void copy_contents(std::vector<int> &nuevo_red, std::vector<int> &nuevo_green, std::vector<int> &nuevo_blue);
   std::array<float, 3> interpolation(SurroundingColoursSOA& surrounding_colours, float x_original, float y_original);
 
-  auto compress() -> std::tuple<size_t, std::vector<std::string>>; // ICIAR :  5) Comprimir
-  auto tablaIndices(size_t num, std::unordered_map<std::string, std::string> coloresUnicos)
-      -> std::unordered_map<std::string, std::string>;
+  auto compress() -> std::tuple<size_t, std::vector<std::string>>;
+  /*auto tablaIndices(size_t num, std::unordered_map<std::string, std::string> coloresUnicos)
+      -> std::unordered_map<std::string, std::string>;*/
   void guardar_compress(std::string const & nombre_fichero, const std::tuple<size_t, std::vector<std::string>>& elem) const ;
 
-  void set_color();
-  void _set_color(int current_pos);
-  int compare(uint8_t r_new, uint8_t g_new, uint8_t b_new, uint8_t r_old, uint8_t g_old,
-              uint8_t b_old);
+  // definimos getters para los atributos privados
+  [[nodiscard]] auto get_numero_magico() const -> std::string { return numero_magico; }
+  [[nodiscard]] auto get_ancho() const -> int { return ancho; }
+  [[nodiscard]] auto get_alto() const -> int { return alto; }
+  [[nodiscard]] auto get_max_intensidad() const -> int { return max_intensidad; }
+  [[nodiscard]] auto get_red() const -> std::vector<uint8_t> { return red; }
+  [[nodiscard]] auto get_green() const -> std::vector<uint8_t> { return green; }
+  [[nodiscard]] auto get_blue() const -> std::vector<uint8_t> { return blue; }
+
+  // Definimos los setters para los atributos privados
+  void set_numero_magico(std::string const & numero_magico) { ImageSOA::numero_magico = numero_magico; }
+  void set_ancho(int const & ancho) { ImageSOA::ancho = ancho; }
+  void set_alto(int const & alto) { ImageSOA::alto = alto; }
+  void set_max_intensidad(int const & max_intensidad) { ImageSOA::max_intensidad = max_intensidad; }
+  void set_red(std::vector<uint8_t> const & red) { ImageSOA::red = red; }
+  void set_green(std::vector<uint8_t> const & green) { ImageSOA::green = green; }
+  void set_blue(std::vector<uint8_t> const & blue) { ImageSOA::blue = blue; }
 };
 
 #endif //COMP_ARCH_LAB1_IMAGESOA_H

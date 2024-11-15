@@ -2,21 +2,20 @@
 // Created by sergio on 7/10/24.
 //
 #include "imageaos.hpp"
+
+#include <algorithm>
 #include <bitset>
+#include <complex>
 #include <cstdint>
 #include <fstream>
+#include <functional>
 #include <iostream>
+#include <libraries/common/progargs.hpp>
+#include <ranges>
 #include <string>
+#include <tuple>
 #include <unordered_map>
 #include <vector>
-#include <complex>
-#include <functional>
-#include <ranges>
-#include <tuple>
-#include <algorithm>
-#include <cstdint>
-#include <unordered_map>
-#include "imageaos.hpp"
 
 ImageAOS::ImageAOS() = default;
 
@@ -211,7 +210,6 @@ auto ImageAOS::compress() -> std::tuple<size_t, std::vector<std::string>> {
   // comprimida
   std::unordered_map<std::string, std::string> coloresUnicos{};  // conjunto de colores únicos que hemos visto en la imagen
   int nowIndice = 0;
-  std::cout << "hola \n" << std::endl;
   // en este bucle se genera el texto con los valores de los pixeles en la imagen comprimida
   for (auto & vector_pixele : vector_pixeles) {
     // en colores guardamos los tres colores
@@ -223,13 +221,9 @@ auto ImageAOS::compress() -> std::tuple<size_t, std::vector<std::string>> {
       nowIndice++;
     }
   }
-
   size_t numColoresUnicos = coloresUnicos.size();
-  std::cout << "hola3 \n" << std::endl;
-std::cout << "hola \n" << std::endl;
   std::unordered_map<std::string, std::string> bin = tablaIndices(numColoresUnicos, coloresUnicos);
   size_t indice = vector_pixeles.size();
-  std::cout << indice << std::endl;
   std::vector<std::string> pixelIndices;
   pixelIndices.resize(indice);
   // guardamos secuencia de indices de los colores en el texto
@@ -239,43 +233,7 @@ std::cout << "hola \n" << std::endl;
       std::to_string(vector_pixeles[i].green) + std::to_string(vector_pixeles[i].blue);
     pixelIndices[i] = bin[color];
   }
-  std::cout << "hola \n" << std::endl;
   return {numColoresUnicos, pixelIndices};
-}
-
-auto ImageAOS::tablaIndices(size_t num, std::unordered_map<std::string, std::string> coloresUnicos) -> std::unordered_map<std::string, std::string> {
-  if (num <= 255) {
-    for (auto const& color : coloresUnicos) {
-      //int indice = color.second;
-      unsigned long long indice = std::stoull(color.second);
-      std::string ind = std::bitset<8>(indice).to_string();
-      coloresUnicos[color.first] = ind;
-    }
-    return coloresUnicos;
-  }
-  else if (num > 255 && num < 65536) {
-    //necesitamos 2B para representar todos los indices
-    //return 16;
-    for (auto const& color : coloresUnicos) {
-      unsigned long long indice = std::stoull(color.second);
-      std::string ind =((std::bitset<16>(indice) >> 8) | (std::bitset<16>(indice) << 8)).to_string();
-      coloresUnicos[color.first] = ind;
-    }
-    return coloresUnicos;
-  }
-  else if (num < 4294967296) {
-    for (auto const& color : coloresUnicos) {
-      unsigned long long indice= std::stoull(color.second);
-      std::string ind =(std::bitset<32>(indice)>> 24 | std::bitset<32>(indice) << 8 |
-        std::bitset<32>(indice) <<8 | std::bitset<32>(indice) << 24 ).to_string();
-      coloresUnicos[color.first] = ind;
-    }
-    return coloresUnicos;
-  }
-  else {
-    std::cerr << "El número de colores en la imagen es demasiado grande para ser representados en la imagen comprimida. \n";
-    exit(1);  // salimos de la ejecucion si el numero de colores es demasiado grande
-  }
 }
 
 void ImageAOS::guardar_compress(const std::string& nombre_fichero, const std::tuple<size_t, std::vector<std::string>>& elem) const {

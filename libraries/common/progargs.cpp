@@ -2,7 +2,10 @@
 // Created by sergio on 7/10/24.
 //
 #include "progargs.hpp"
+
+#include <bitset>
 #include <iostream>
+#include <unordered_map>
 
 auto validate_parameters(int argc, std::vector<std::string> argumentos) -> bool {
   const std::string& operacion = argumentos[3];
@@ -21,4 +24,45 @@ auto validate_parameters(int argc, std::vector<std::string> argumentos) -> bool 
   }
   // si va bien, devolvemos true
   return true;
+}
+
+
+//calculo de la tabla de indices para la imagen comprimida
+auto tablaIndices(size_t num, std::unordered_map<std::string, std::string> coloresUnicos) -> std::unordered_map<std::string, std::string> {
+  if (num <= 255) { //dependiendo de la cantidad de colores, necesitamos 1B, 2B o 4B
+    //para representar todos los indices
+    for (auto const& color : coloresUnicos) {
+      //int indice = color.second;
+      unsigned long long indice = std::stoull(color.second);
+      std::string ind = std::bitset<8>(indice).to_string();
+      coloresUnicos[color.first] = ind;
+    }
+    return coloresUnicos;
+  }
+  else if (num > 255 && num < 65536) {
+    //necesitamos 2B para representar todos los indices
+    //return 16;
+    for (auto const& color : coloresUnicos) {
+      unsigned long long indice = std::stoull(color.second);
+      std::string ind =((std::bitset<16>(indice) >> 8) & std::bitset<16>(255) |
+        (std::bitset<16>(indice) << 8) & std::bitset<16>(65280)).to_string();
+      coloresUnicos[color.first] = ind;
+    }
+    return coloresUnicos;
+  }
+  else if (num < 4294967296) {
+    for (auto const& color : coloresUnicos) {
+      unsigned long long indice= std::stoull(color.second);
+      std::string ind =((std::bitset<32>(indice)>> 24) & std::bitset<32>(255) |
+        (std::bitset<32>(indice) >> 8) & std::bitset<32>(65280)|
+        (std::bitset<32>(indice) <<8) & std::bitset<32>(16711680) |
+        (std::bitset<32>(indice) << 24) & std::bitset<32>(4278190080)).to_string();
+      coloresUnicos[color.first] = ind;
+    }
+    return coloresUnicos;
+  }
+  else {
+    std::cerr << "El número de colores en la imagen es demasiado grande para ser representados en la imagen comprimida. \n";
+    exit(1);  // salimos de la ejecucion si el numero de colores es demasiado grande
+  }
 }
