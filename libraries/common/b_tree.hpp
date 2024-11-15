@@ -8,6 +8,7 @@
 #include <cstdint>
 #include <vector>
 #include <memory>
+/*
 class b_tree {
 
   private:
@@ -60,5 +61,5 @@ class b_tree {
     std::vector<std::vector<std::uint8_t>> lista_colores_eliminados();
     auto compare(std::uint8_t  r_new, std::uint8_t  g_new, std::uint8_t b_new, std::uint8_t  r_old, std::uint8_t  g_old, std::uint8_t b_old) -> int;
 };
-
+*/
 #endif  // IMTOOL_B_TREE_H

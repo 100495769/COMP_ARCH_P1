@@ -9,10 +9,10 @@
 #include <unordered_map>
 
 struct nuevo_hash {
-    size_t operator()(const std::vector<std::uint8_t> & color) const {
+    auto operator()(const std::vector<std::uint8_t> & color) const -> size_t{
       // Combinación de los hashes de los tres valores
       // Una posible implementación (ajusta según tus necesidades):
-      return (color[0] << 16) | (color[1] << 8) | color[2];
+      return (static_cast<size_t>(color[0]) << 16) | (static_cast<size_t>(color[1]) << 8) | static_cast<size_t>(color[2]);
     }
 };
 // Aquí irían las declaraciones de funciones, clases, etc.
@@ -57,7 +57,7 @@ class ImageSOA {
   void cutfreq(int n);
   void pixel_assessment(CoordenadasSOA& coordenadas, SurroundingColoursSOA& surrounding_colours);
   void copy_contents(std::vector<int> &nuevo_red, std::vector<int> &nuevo_green, std::vector<int> &nuevo_blue);
-  std::array<float, 3> interpolation(SurroundingColoursSOA& surrounding_colours, float x_original, float y_original);
+  auto interpolation(SurroundingColoursSOA& surrounding_colours, float x_original, float y_original) -> std::array<float, 3>;
 
   auto compress() -> std::tuple<size_t, std::vector<std::string>>;
   /*auto tablaIndices(size_t num, std::unordered_map<std::string, std::string> coloresUnicos)

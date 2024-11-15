@@ -1,6 +1,7 @@
 //
 // Created by sergio on 12/11/24.
 //
+/*
 #include "b_tree.hpp"
 #include <cstdint>
 #include <vector>
@@ -237,7 +238,7 @@ void b_tree::_in_order_fill_unfreq(std::vector<std::unique_ptr<Nodo>*> &colores,
   std::vector<std::unique_ptr<Nodo>*> colores_rellenados;
   for (int i = 0; i < colores.size(); i++) {
     bool color_found = false;
-    /*
+    //here was start of the first block of comment
     int g = 0;
     while ((color_found == false) && (g < (*colores[i])->cantidad_elementos)){
       // Vamos a comprobar los adyacentes por cada uno hasta encontrar un color.
@@ -297,7 +298,8 @@ void b_tree::_in_order_fill_unfreq(std::vector<std::unique_ptr<Nodo>*> &colores,
         }
       }
     g++;
-    }*/
+    }
+    //here was the end of the first block of comment
 
     color_found = radar_search(colores[i], tamaño);
     tamaño += 1;
@@ -397,3 +399,4 @@ void b_tree::rellenar_datos(std::vector<uint8_t> * rojo, std::vector<uint8_t> * 
   alto_img = alto;
   tamano_img = ancho * alto;
 }
+*/

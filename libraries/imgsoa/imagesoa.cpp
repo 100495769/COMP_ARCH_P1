@@ -141,7 +141,7 @@ void ImageSOA::pixel_assessment(CoordenadasSOA& coordenadas, SurroundingColoursS
 
   // since we store pixels in 2D array flattened into 1D array -> accessing by y*width + x
   // y -> row number (altura), x -> column number (anchura)
-  size_t ancho_casted = static_cast<size_t>(ancho);
+  auto ancho_casted = static_cast<size_t>(ancho);
   // bottom left pixel assessment
   surrounding_colours.red_low_left = red[coordenadas.y_low * ancho_casted + coordenadas.x_low];
   surrounding_colours.green_low_left = green[coordenadas.y_low * static_cast<size_t>(ancho_casted) + coordenadas.x_low];
@@ -170,9 +170,9 @@ void ImageSOA::copy_contents(std::vector<int> &nuevo_red, std::vector<int> &nuev
   blue.resize(nuevo_blue.size());
 
   // copy contents from new rgb vectors into the old ones
-  std::copy(nuevo_red.begin(), nuevo_red.end(), red.begin());
-  std::copy(nuevo_green.begin(), nuevo_green.end(), green.begin());
-  std::copy(nuevo_blue.begin(), nuevo_blue.end(), blue.begin());
+  std::ranges::copy(nuevo_red.begin(), nuevo_red.end(), red.begin());
+  std::ranges::copy(nuevo_green.begin(), nuevo_green.end(), green.begin());
+  std::ranges::copy(nuevo_blue.begin(), nuevo_blue.end(), blue.begin());
 
   // clear up new contents
   nuevo_red.clear();
@@ -180,7 +180,7 @@ void ImageSOA::copy_contents(std::vector<int> &nuevo_red, std::vector<int> &nuev
   nuevo_blue.clear();
 }
 
-std::array<float, 3> ImageSOA::interpolation(SurroundingColoursSOA& surrounding_colours, float x_original, float y_original){
+auto ImageSOA::interpolation(SurroundingColoursSOA& surrounding_colours, float x_original, float y_original) -> std::array<float, 3>{
 
   float frac_part_x = x_original - std::floor(x_original); // calculating the fraction parts
   float frac_part_y = y_original - std::floor(y_original);
@@ -233,7 +233,7 @@ void ImageSOA::resize(int nuevo_ancho, int nuevo_alto) {// Esta función escala 
       //interpolating colors by x and y axes
       std::array<float, 3>  final_colores = interpolation(surrounding_colours, x_original, y_original);
       // filling up new matrices with intepolated colors
-      size_t nueva_posicion = static_cast<size_t>(nuevo_y * nuevo_ancho + nuevo_x);
+      auto nueva_posicion = static_cast<size_t>(nuevo_y * nuevo_ancho + nuevo_x);
       nuevo_red[nueva_posicion] = static_cast<int>(final_colores[0]);
       nuevo_green[nueva_posicion] = static_cast<int>(final_colores[1]);
       nuevo_blue[nueva_posicion] = static_cast<int>(final_colores[2]);
@@ -324,7 +324,7 @@ void ImageSOA::guardar_compress(const std::string& nombre_fichero, const std::tu
   }
   archivo.close();
 }
-auto ImageSOA::compare(std::uint8_t  r_new, std::uint8_t  g_new, std::uint8_t  b_new, std::uint8_t  r_old, std::uint8_t  g_old, std::uint8_t  b_old) -> int{
+/*auto ImageSOA::compare(std::uint8_t  r_new, std::uint8_t  g_new, std::uint8_t  b_new, std::uint8_t  r_old, std::uint8_t  g_old, std::uint8_t  b_old) -> int{
   // Retornea 2 si el new es mayor, 1 si el old es mayor y 0 si son iguales.
   auto new_key = std::tie(b_new, g_new, r_new);
   auto old_key = std::tie(b_old, g_old, r_old);
@@ -377,7 +377,6 @@ bool ImageSOA::radar_search(int & pos, int & x, int & y ,std::unordered_map<std:
   return found_color;
 }
 
-/*
 void ImageSOA::cutfreq(int n) {
   std::unordered_map<std::vector<std::uint8_t>, int, nuevo_hash> mis_colores;
   b_tree arbol_de_apariciones;
@@ -477,7 +476,7 @@ void ImageSOA::cutfreq(int n) {
  }
 
 
-  /*
+
 
   auto start = std::chrono::high_resolution_clock::now();
 
@@ -517,7 +516,7 @@ void ImageSOA::cutfreq(int n) {
       }
     }
 
-  }*/
+  }
     //std::cout<<cantidad_de_repeticiones.size()<<"  "<<cantidad_de_repeticiones[0]<<std::endl;
   }
 
@@ -525,7 +524,7 @@ void ImageSOA::cutfreq(int n) {
   //Voy a calcular hasta que repeticion me quito.
   std::size_t i = 0;
   bool cabe_mas = true;
-  /*
+  //start of the block of comments
   int total_repeticiones = 0;
   while (i < tamaño_repeticiones){
     total_repeticiones += cantidad_de_repeticiones[i];
@@ -533,8 +532,8 @@ void ImageSOA::cutfreq(int n) {
   }
   i = 0;
    std::cout<<"Colores: "<<total_repeticiones<<std::endl;
-   */
-/*
+   //start of the block of comments
+
   while (i < cantidad_de_repeticiones.size() && cabe_mas){
     std::cout<<"Cantidad de repeticiones para: "<<i<<" "<<cantidad_de_repeticiones[i];
     if (n > cantidad_de_repeticiones[i]){

@@ -4,7 +4,7 @@
 #include "calcular_prox_euclideo.hpp"
 #include <iostream>
 
-int calcular_prox_euclideo::my_pow(int a){
+/*int calcular_prox_euclideo::my_pow(int a){
   return a*a;
 }
 
@@ -55,3 +55,4 @@ std::vector<int> calcular_prox_euclideo::prox_euclideo() {
   prox_euclides.pop();
   return mi_return;
 };
+*/
