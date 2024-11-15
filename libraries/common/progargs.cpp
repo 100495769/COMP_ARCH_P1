@@ -16,9 +16,7 @@ auto validate_parameters(int argc, std::vector<std::string> argumentos) -> bool 
 
   // gestionamos el tipo de operacion que sea:
   if ((operacion == "info" && argc != 4) || (operacion == "maxlevel" && argc != 5) ||
-      (operacion == "resize" && argc != 6)) {
-    // ICIAR :  4) Elimiacion de colores menos frecuentes
-    // ICIAR :  5) Comprimir
+      (operacion == "resize" && argc != 6) ||(operacion == "compress" && argc != 4)) {
     std::cout << "Error: operacion incorrecta o numero de argumentos erroneos\n";
     return false;  // gestionamos que la operacion y el numero de argumentos son correctos
   }
