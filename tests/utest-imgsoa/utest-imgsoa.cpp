@@ -500,3 +500,69 @@ TEST(ImageSOA_TEST, interpolation_pixeles_valido) {
   ASSERT_EQ(gb_interpolation[1], 0);
   ASSERT_EQ(gb_interpolation[2], 127.5);
 }
+
+TEST(ImageSOA_TEST, resize_bigger_valido) {
+  // check if the new size rescaled accordingly
+  // como salida estandar cada variable de la imagen creada.
+  ImageSOA imagen_prueba = crear_imagen_prueba();
+
+  imagen_prueba.resize(4, 5);
+  int anch = imagen_prueba.get_ancho();
+  int alt = imagen_prueba.get_alto();
+
+  ASSERT_EQ(anch, 4);
+  ASSERT_EQ(alt, 5);
+}
+
+TEST(ImageSOA_TEST, resize_smaller_valido) {
+  // check if the new size rescaled accordingly
+  // como salida estandar cada variable de la imagen creada.
+  ImageSOA imagen_prueba = crear_imagen_prueba();
+
+  imagen_prueba.resize(1, 1);
+  int anch = imagen_prueba.get_ancho();
+  int alt = imagen_prueba.get_alto();
+
+  ASSERT_EQ(anch, 1);
+  ASSERT_EQ(alt, 1);
+}
+
+TEST(ImageSOA_TEST, resize_bigger_invalido) {
+  // check if the new size rescaled accordingly
+  // como salida estandar cada variable de la imagen creada.
+  ImageSOA imagen_prueba = crear_imagen_prueba();
+
+  imagen_prueba.resize(4, 5);
+  int anch = imagen_prueba.get_ancho();
+  int alt = imagen_prueba.get_alto();
+  bool exit = false;
+  while (!exit) {
+    int anch_random_invalido = static_cast<int>(arc4random());
+    int alt_random_invalido = static_cast<int>(arc4random());
+    if (anch_random_invalido!=4 and alt_random_invalido!=5) {
+      exit = true;
+      ASSERT_NE(anch, anch_random_invalido);
+      ASSERT_NE(alt, alt_random_invalido);
+    }
+  }
+}
+
+TEST(ImageSOA_TEST, resize_smaller_invalido) {
+  // check if the new size rescaled accordingly
+  // como salida estandar cada variable de la imagen creada.
+  ImageSOA imagen_prueba = crear_imagen_prueba();
+
+  imagen_prueba.resize(1, 1);
+  int anch = imagen_prueba.get_ancho();
+  int alt = imagen_prueba.get_alto();
+  bool exit = false;
+  while (!exit) {
+    int anch_random_invalido = static_cast<int>(arc4random());
+    int alt_random_invalido = static_cast<int>(arc4random());
+    if (anch_random_invalido!=4 and alt_random_invalido!=5) {
+      exit = true;
+      ASSERT_NE(anch, anch_random_invalido);
+      ASSERT_NE(alt, alt_random_invalido);
+    }
+  }
+}
