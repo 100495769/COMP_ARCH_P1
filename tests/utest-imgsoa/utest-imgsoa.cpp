@@ -185,7 +185,7 @@ auto crear_imagen_prueba_grande() -> ImageSOA {
 }
 
 TEST(ImageSOA_TEST, cargar_imagen_valido_255) {
-  // si guardar_imagen funciona correctamente, guarda correctamente los metadatos.
+  // si cargar_imagen funciona correctamente, guarda correctamente los metadatos.
   // Eso significa que la funcion info tambien funciona correctamente porque esta solo saca
   // como salida estandar cada variable de la imagen creada.
   ImageSOA imagen_prueba = crear_imagen_prueba();

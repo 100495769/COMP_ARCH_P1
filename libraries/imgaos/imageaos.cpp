@@ -111,6 +111,7 @@ void ImageAOS::maxlevel(int nueva_intensidad) {     // Esta función escala la i
     vector_pixele.green = static_cast<uint8_t>(nuevo_valor_green);
     vector_pixele.blue = static_cast<uint8_t>(nuevo_valor_blue);
   }
+  max_intensidad = nueva_intensidad;
 }
 
 // this function gets the rgb values for the 4 nearby pixels that are going to be interpolated later
