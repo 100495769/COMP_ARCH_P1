@@ -16,41 +16,96 @@ auto isInt(std::string value) -> bool {
   }
 }
 
-auto validate_resize(int argc, std::vector<std::string> argumentos) -> bool {
+void validate_resize(int argc, std::vector<std::string> argumentos) {
+  // validate resize function inputs
   if (argc !=6) {
-    std::cout << "Error: Invalid number of extra arguments for resize: " << abs(argc - 4);
-    return false;
+    std::cout << "Error: Invalid number of extra arguments for resize: " << abs(argc - 4) << "\n";
+    exit(-1);
   }
 
   bool int_arg4 = isInt(argumentos[4]);
   bool int_arg5 = isInt(argumentos[5]);
 
   if ((!int_arg4) or std::stoi(argumentos[4]) <= 0){
-    std::cout << "Error: Invalid resize width: " << argumentos[4];
-    return false;
+    std::cout << "Error: Invalid resize width: " << argumentos[4] << "\n";
+    exit(-1);
   }
   if ((!int_arg5) or std::stoi(argumentos[5]) <= 0){
-    std::cout << "Error: Invalid resize heigh: " << argumentos[5];
-    return false;
+    std::cout << "Error: Invalid resize heigh: " << argumentos[5] << "\n";
+    exit(-1);
   }
-  return true;
+}
+
+void validate_maxlevel(int argc, std::vector<std::string> argumentos) {
+  // validate maxlevel function inputs
+  if (argc !=5) {
+    std::cout << "Error: Invalid number of extra arguments for maxlevel: " << abs(argc - 4) << "\n";
+    exit(-1);
+  }
+
+  bool int_arg4 = isInt(argumentos[4]);
+
+  if ((!int_arg4) or std::stoi(argumentos[4]) <= 0){
+    std::cout << "Error: Invalid maxlevel: " << argumentos[4] << "\n";
+    exit(-1);
+  }
+
+  if (std::stoi(argumentos[4]) < 0 or std::stoi(argumentos[4]) > 65535){
+    std::cout << "Error: Invalid maxlevel: " << argumentos[4] << "\n";
+    exit(-1);
+  }
+}
+
+void validate_info(int argc, std::vector<std::string> argumentos) {
+  // validate info function inputs
+  if (argc !=4) {
+    std::cout << "Error: Invalid extra arguments for info: " << argumentos[4] << "\n";
+    exit(-1);
+  }
+}
+
+void validate_cutfreq(int argc, std::vector<std::string> argumentos) {
+  // validate cutfreq function inputs
+  if (argc != 5) {
+    std::cout << "Error: Invalid number of extra arguments for cutfreq: " << abs(argc - 4) << "\n";
+    exit(-1);
+  }
+
+  bool int_arg4 = isInt(argumentos[4]);
+
+  if ((!int_arg4) or std::stoi(argumentos[4]) <= 0){
+    std::cout << "Error: Invalid cutfreq:: " << argumentos[4] << "\n";
+    exit(-1);
+  }
+}
+
+void validate_compress(int argc, std::vector<std::string> argumentos) {
+  // validate compress function inputs
+  if (argc !=4) {
+    std::cout << "Invalid extra arguments for compress: " << argumentos[4] << "\n";
+    exit(-1);
+  }
 }
 
 auto validate_parameters(int argc, std::vector<std::string> argumentos) -> bool {
+  // validate all input parameters
   const std::string& operacion = argumentos[3];
-
-  //std::cout << "Argc: " << argc << "\n" << argumentos[0] << "\n" << argumentos[1] << "\n" << argumentos[2] << "\n" << argumentos[3] << "\n";
-  // int nueva_intensidad, nuevo_ancho, nuevo_alto;
-  //// ICIAR METE VALORES TUYOS SI LO NECESITAS !!
-
-  // gestionamos el tipo de operacion que sea:
-  if ((operacion == "info" && argc != 4) || (operacion == "maxlevel" && argc != 5) ||(operacion == "compress" && argc != 4)) {
-    std::cout << "Error: operacion incorrecta o numero de argumentos erroneos\n";
-    return false;  // gestionamos que la operacion y el numero de argumentos son correctos
-  }
-
-  if (operacion == "resize") {
+  if (argc <= 3) {
+    std::cout << "Error: Invalid number of arguments: " << argc-1 << "\n";
+    exit(-1);
+  } else if (operacion == "maxlevel") {
+    validate_maxlevel(argc, argumentos);
+  } else if (operacion == "resize") {
     validate_resize(argc, argumentos);
+  } else if (operacion == "info") {
+    validate_info(argc, argumentos);
+  } else if (operacion == "cutfreq") {
+    validate_cutfreq(argc, argumentos);
+  } else if (operacion == "compress") {
+    validate_compress(argc, argumentos);
+  } else {
+    std::cout << "Error: Invalid option: " << argumentos[3] << "\n";
+    exit(-1);
   }
   // si va bien, devolvemos true
   return true;
