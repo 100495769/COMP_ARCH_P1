@@ -117,7 +117,7 @@ void ImageAOS::maxlevel(int nueva_intensidad) {     // Esta función escala la i
 void ImageAOS::pixel_assessment_aos(CoordenadasAOS& coordenadas, SurroundingColoursAOS& surrounding_colours) {
   // since we store pixels in 2D array flattened into 1D array -> accessing by y*width + x
   // y -> row number (altura), x -> column number (anchura)
-  size_t ancho_casted = static_cast<size_t>(ancho);
+  auto ancho_casted = static_cast<size_t>(ancho);
   // bottom left pixel assessment
   surrounding_colours.low_left = vector_pixeles[coordenadas.y_low * ancho_casted + coordenadas.x_low];
   // bottom right pixel assessment
@@ -131,12 +131,12 @@ void ImageAOS::pixel_assessment_aos(CoordenadasAOS& coordenadas, SurroundingColo
 void ImageAOS::copy_contents_aos(std::vector<pixel> nuevo_vector_pixeles) {
 
   vector_pixeles.resize(nuevo_vector_pixeles.size());
-  std::copy(nuevo_vector_pixeles.begin(), nuevo_vector_pixeles.end(), vector_pixeles.begin());
+  std::ranges::copy(nuevo_vector_pixeles.begin(), nuevo_vector_pixeles.end(), vector_pixeles.begin());
 
   nuevo_vector_pixeles.clear();
 }
 
-std::array<float, 3> ImageAOS::interpolation_aos(SurroundingColoursAOS& surrounding_colours, float x_original, float y_original){
+auto ImageAOS::interpolation_aos(SurroundingColoursAOS& surrounding_colours, float x_original, float y_original) -> std::array<float, 3> {
 
   float frac_part_x = x_original - std::floor(x_original); // calculating the fraction parts
   float frac_part_y = y_original - std::floor(y_original);
@@ -162,6 +162,9 @@ std::array<float, 3> ImageAOS::interpolation_aos(SurroundingColoursAOS& surround
 
 void ImageAOS::resize_aos(int nuevo_ancho, int nuevo_alto) {// Esta función escala el tamaño de la imagen a los nuevos valores de ancho y alto dado.
   // proportion in between old a new size
+  if (nuevo_ancho <=0 or nuevo_alto <=0) {
+    std::cerr << "Nueva altura y anchura no puede ser menor o igual a cero!\n";
+  }
   float proporcion_anchura = static_cast<float>(ancho)/static_cast<float>(nuevo_ancho);
   float proporcion_altura = static_cast<float>(alto)/static_cast<float>(nuevo_alto);
 

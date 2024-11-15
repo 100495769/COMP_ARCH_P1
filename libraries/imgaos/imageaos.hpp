@@ -58,7 +58,7 @@ class ImageAOS {
   void resize_aos(int nuevo_ancho, int nuevo_alto);
   void pixel_assessment_aos(CoordenadasAOS& coordenadas, SurroundingColoursAOS& surrounding_colours);
   void copy_contents_aos(std::vector<pixel> nuevo_vector_pixeles);
-  std::array<float, 3> interpolation_aos(SurroundingColoursAOS& surrounding_colours, float x_original, float y_original);
+  auto interpolation_aos(SurroundingColoursAOS& surrounding_colours, float x_original, float y_original) -> std::array<float, 3> ;
 
   auto compress() -> std::tuple<size_t, std::vector<std::string>>;
   /*auto tablaIndices(size_t num, std::unordered_map<std::string, std::string> coloresUnicos)
