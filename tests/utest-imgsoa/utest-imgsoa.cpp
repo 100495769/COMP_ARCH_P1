@@ -169,6 +169,21 @@ auto crear_imagen_prueba() -> ImageSOA {
   return imagen_prueba;
 }
 
+auto crear_imagen_prueba_grande() -> ImageSOA {
+  // vamos a crear una imagen de 2x2 de prueba con una intensidad de 65535
+  std::string path_imagen = "/tmp/imagen_prueba_grande.ppm";
+  // metemos la los metadatos y la matriz de pixeles
+  std::vector<uint16_t> matriz_pixeles = {
+    'P', '6', '\n', '2', ' ', '2', '\n', '6','5','5','3','5', '\n',
+    65535, 0, 0,    0, 65535, 0,    0, 0, 65535,   65535, 65535, 65535};
+  std::ofstream archivo(path_imagen, std::ios::binary);
+  archivo.write(reinterpret_cast<char*>(matriz_pixeles.data()), sizeof(matriz_pixeles));
+  archivo.close();
+  ImageSOA imagen_prueba;
+  imagen_prueba.cargar_imagen(path_imagen);
+  return imagen_prueba;
+}
+
 TEST(ImageSOA_TEST, cargar_imagen_valido_255) {
   // si guardar_imagen funciona correctamente, guarda correctamente los metadatos.
   // Eso significa que la funcion info tambien funciona correctamente porque esta solo saca
@@ -277,45 +292,6 @@ TEST(ImageSOA_TEST, guardar_imagen_no_valido_noexiste) {
 // sea invalido es que haya problemas en el paso de argumentos al ejecutable o a la hora de leer/guardar
 // datos a los archivos: Esta gesionado en otras funciones
 
-// creamos dos fotos prueba: Una con valor de intensidad 255, y otra con 1000, por ejemplo.
-auto imagen_pequena_maxlevel() -> ImageSOA {
-  ImageSOA imagen_prueba;
-  std::string magic_number = "P6";
-  int width = 2;
-  int height = 2;
-  int max_intensity = 255;
-  std::vector<uint8_t> rojo = {255, 0,0,255};
-  std::vector<uint8_t> verde = {0, 255, 0, 255};
-  std::vector<uint8_t> azul = {0, 0, 255, 255};
-  imagen_prueba.set_numero_magico(magic_number);
-  imagen_prueba.set_ancho(width);
-  imagen_prueba.set_alto(height);
-  imagen_prueba.set_max_intensidad(max_intensity);
-  imagen_prueba.set_red(rojo);
-  imagen_prueba.set_green(verde);
-  imagen_prueba.set_blue(azul);
-  return imagen_prueba;
-}
-
-auto imagen_grande_maxlevel() -> ImageSOA {
-  ImageSOA imagen_prueba;
-  std::string magic_number = "P6";
-  int width = 2;
-  int height = 2;
-  int max_intensity = 10000;
-  std::vector<uint8_t> rojo = {255, 0,0,255};
-  std::vector<uint8_t> verde = {0, 255, 0, 255};
-  std::vector<uint8_t> azul = {0, 0, 255, 255};
-  imagen_prueba.set_numero_magico(magic_number);
-  imagen_prueba.set_ancho(width);
-  imagen_prueba.set_alto(height);
-  imagen_prueba.set_max_intensidad(max_intensity);
-  imagen_prueba.set_red(rojo);
-  imagen_prueba.set_green(verde);
-  imagen_prueba.set_blue(azul);
-  return imagen_prueba;
-}
-/*
 TEST(ImageSOA_TEST, maxlevel_valido_pequeño_pequeño) {
   // pasamos de 255 a 100.
   ImageSOA pequena1 = crear_imagen_prueba();
@@ -356,15 +332,57 @@ TEST(ImageSOA_TEST, maxlevel_valido_pequeño_pequeño) {
 
 TEST(ImageSOA_TEST, maxlevel_valido_pequeño_grande) {
   // pasamos de 255 a 10000.
-  ImageSOA pequena1 = imagen_pequena_maxlevel();
+  ImageSOA pequena1 = crear_imagen_prueba();
   int intens= pequena1.get_max_intensidad();
-  std::vector<uint8_t> expected_red;
-  std::vector<uint8_t> expected_green;
-  std::vector<uint8_t> expected_blue;
+
+  ASSERT_EQ(intens, 255); // la intensidad la coge bien
+
   std::vector<uint8_t> red = pequena1.get_red();
   std::vector<uint8_t> green = pequena1.get_green();
   std::vector<uint8_t> blue = pequena1.get_blue();
+  // inicializamos los de comprobacion con valores 0
+  std::vector<uint8_t> expected_red (red.size(), 0);
+  std::vector<uint8_t> expected_green(green.size(), 0);
+  std::vector<uint8_t> expected_blue(blue.size(), 0);
+  // llenamos los vectores de comprobacion con los valores que deberian tener
+  for (size_t i=0; i < red.size(); i++) {
+    int nuevo_valor_red = (red[i] * 10000) / intens;
+    int nuevo_valor_green = (green[i] * 10000) / intens;
+    int nuevo_valor_blue = (blue[i] * 10000) / intens;
+    expected_red[i] = static_cast<uint8_t>(nuevo_valor_red);
+    expected_green[i] = static_cast<uint8_t>(nuevo_valor_green);
+    expected_blue[i] = static_cast<uint8_t>(nuevo_valor_blue);
+  }
+  pequena1.maxlevel(10000);
+  // ahora hacemos lo mismo de vuelta y vamos comparando.
+  int salida_intens= pequena1.get_max_intensidad();
+  std::vector<uint8_t> rednew = pequena1.get_red();
+  std::vector<uint8_t> greennew = pequena1.get_green();
+  std::vector<uint8_t> bluenew = pequena1.get_blue();
+  ASSERT_EQ(salida_intens, 10000);
+  for (size_t i=0; i< rednew.size(); i++) {
+    // comparamos
+    ASSERT_EQ(expected_red[i], rednew[i]);
+    ASSERT_EQ(expected_green[i], greennew[i]);
+    ASSERT_EQ(expected_blue[i], bluenew[i]);
+  }
+}
+/* ----------------------------------------------------------------
+TEST(ImageSOA_TEST, maxlevel_valido_grande_pequeño) {
+  // pasamos de 65535 a 255.
+  ImageSOA grande1 = crear_imagen_prueba_grande();
+  int intens = grande1.get_max_intensidad();
 
+  ASSERT_EQ(intens, 65535); // la intensidad la coge bien
+
+  std::vector<uint8_t> red = pequena1.get_red();
+  std::vector<uint8_t> green = pequena1.get_green();
+  std::vector<uint8_t> blue = pequena1.get_blue();
+  // inicializamos los de comprobacion con valores 0
+  std::vector<uint8_t> expected_red (red.size(), 0);
+  std::vector<uint8_t> expected_green(green.size(), 0);
+  std::vector<uint8_t> expected_blue(blue.size(), 0);
+  // llenamos los vectores de comprobacion con los valores que deberian tener
   for (size_t i=0; i < red.size(); i++) {
     int nuevo_valor_red = (red[i] * 10000) / intens;
     int nuevo_valor_green = (green[i] * 10000) / intens;
@@ -388,50 +406,16 @@ TEST(ImageSOA_TEST, maxlevel_valido_pequeño_grande) {
   }
 }
 
-TEST(ImageSOA_TEST, maxlevel_valido_grande_pequeño) {
-  // pasamos de 10000 a 255.
-  ImageSOA pequena1 = imagen_grande_maxlevel();
-  int intens= pequena1.get_max_intensidad();
-  std::vector<uint8_t> expected_red;
-  std::vector<uint8_t> expected_green;
-  std::vector<uint8_t> expected_blue;
-  std::vector<uint8_t> red = pequena1.get_red();
-  std::vector<uint8_t> green = pequena1.get_green();
-  std::vector<uint8_t> blue = pequena1.get_blue();
-
-  for (size_t i=0; i < red.size(); i++) {
-    int nuevo_valor_red = (red[i] * 255) / intens;
-    int nuevo_valor_green = (green[i] * 255) / intens;
-    int nuevo_valor_blue = (blue[i] * 255) / intens;
-    expected_red[i] = static_cast<uint8_t>(nuevo_valor_red);
-    expected_green[i] = static_cast<uint8_t>(nuevo_valor_green);
-    expected_blue[i] = static_cast<uint8_t>(nuevo_valor_blue);
-  }
-  pequena1.maxlevel(255);
-  // ahora hacemos lo mismo de vuelta y vamos comparando.
-  int salida_intens= pequena1.get_max_intensidad();
-  std::vector<uint8_t> rednew = pequena1.get_red();
-  std::vector<uint8_t> greennew = pequena1.get_green();
-  std::vector<uint8_t> bluenew = pequena1.get_blue();
-  ASSERT_EQ(salida_intens, 255);
-  for (size_t i=0; i< rednew.size(); i++) {
-    // comparamos
-    ASSERT_EQ(expected_red[i], rednew[i]);
-    ASSERT_EQ(expected_green[i], greennew[i]);
-    ASSERT_EQ(expected_blue[i], bluenew[i]);
-  }
-}
-
 TEST(ImageSOA_TEST, maxlevel_valido_grande_grande) {
   // pasamos de 10000 a 60000.
-  ImageSOA pequena1 = imagen_pequena_maxlevel();
-  int intens= pequena1.get_max_intensidad();
+  ImageSOA grande1 = crear_imagen_prueba_grande();
+  int intens= grande1.get_max_intensidad();
   std::vector<uint8_t> expected_red;
   std::vector<uint8_t> expected_green;
   std::vector<uint8_t> expected_blue;
-  std::vector<uint8_t> red = pequena1.get_red();
-  std::vector<uint8_t> green = pequena1.get_green();
-  std::vector<uint8_t> blue = pequena1.get_blue();
+  std::vector<uint8_t> red = grande1.get_red();
+  std::vector<uint8_t> green = grande1.get_green();
+  std::vector<uint8_t> blue = grande1.get_blue();
 
   for (size_t i=0; i < red.size(); i++) {
     int nuevo_valor_red = (red[i] * 60000) / intens;
@@ -441,12 +425,12 @@ TEST(ImageSOA_TEST, maxlevel_valido_grande_grande) {
     expected_green[i] = static_cast<uint8_t>(nuevo_valor_green);
     expected_blue[i] = static_cast<uint8_t>(nuevo_valor_blue);
   }
-  pequena1.maxlevel(60000);
+  grande1.maxlevel(60000);
   // ahora hacemos lo mismo de vuelta y vamos comparando.
-  int salida_intens= pequena1.get_max_intensidad();
-  std::vector<uint8_t> rednew = pequena1.get_red();
-  std::vector<uint8_t> greennew = pequena1.get_green();
-  std::vector<uint8_t> bluenew = pequena1.get_blue();
+  int salida_intens= grande1.get_max_intensidad();
+  std::vector<uint8_t> rednew = grande1.get_red();
+  std::vector<uint8_t> greennew = grande1.get_green();
+  std::vector<uint8_t> bluenew = grande1.get_blue();
   ASSERT_EQ(salida_intens, 60000);
   for (size_t i=0; i< rednew.size(); i++) {
     // comparamos
@@ -455,8 +439,9 @@ TEST(ImageSOA_TEST, maxlevel_valido_grande_grande) {
     ASSERT_EQ(expected_blue[i], bluenew[i]);
   }
 }
+------------------------------------------------------------------------ */
 
-*/
+
 // Tests para la FUNCIÓN RESIZE()----------------------------------------------------------|
 
 TEST(ImageSOA_TEST, interpolation_pixeles_valido) {
