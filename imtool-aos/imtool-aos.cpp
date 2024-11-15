@@ -8,7 +8,6 @@
 #include <chrono>
 
 auto main(int argc, char* argv[]) -> int {
-  auto inicio = std::chrono::high_resolution_clock::now();
 
   // cogemos primero los argumentos de entrada y los validamos con el validador de progargs
   std::vector<std::string> argumentos(argv, argv + argc);
@@ -38,7 +37,6 @@ auto main(int argc, char* argv[]) -> int {
   //}
 
   else if (operacion == "compress") {    // esta operación devuelve los colores que se han eliminado
-    std::cout << "Compresion en curso..." << std::endl;
     std::tuple<size_t, std::vector<std::string>> compresion = mi_imagen.compress();
     mi_imagen.guardar_compress(salida_path, compresion);
   }
