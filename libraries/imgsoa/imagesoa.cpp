@@ -387,15 +387,14 @@ void ImageSOA::cutfreq(int m) {
   std::unordered_map<std::vector<std::uint8_t>, int, nuevo_hash> mis_colores;
 
   b_tree arbol_de_apariciones;
-  arbol_de_apariciones.rellenar_datos(&red, &blue, &green, reinterpret_cast<size_t &>(ancho),
-                                      reinterpret_cast<size_t &>(alto));
+  arbol_de_apariciones.rellenar_datos(&red, &blue, &green, static_cast<size_t>(ancho),
+                                      static_cast<size_t>(alto));
   std::vector<size_t> cantidad_de_repeticiones;  // En el 0 los que haya solo una vez. En el 1 los que haya dos veces, etc.
   std::size_t pixeles_en_imagen   = static_cast<size_t>(ancho * alto);
   std::size_t tamaño_repeticiones = 0;
 
   for (size_t i = 0; i < pixeles_en_imagen; i++) {
     size_t repeticion = arbol_de_apariciones.insertar(red[i], green[i], blue[i], i);
-    std::cout<<repeticion<<std::endl;
 
     if (cantidad_de_repeticiones.size() < repeticion) {
       if (tamaño_repeticiones != 0) { cantidad_de_repeticiones.back()--; }
@@ -432,7 +431,7 @@ void ImageSOA::cutfreq(int m) {
       cabe_mas = false;
     }
   }
-  std::cout << i << "  " << cantidad_de_repeticiones.size() << "acatoy" << std::endl;
+  std::cout << i << "  " << n <<" "<< cantidad_de_repeticiones.size() << "acatoy" << std::endl;
   if (i >= cantidad_de_repeticiones.size()) {
     std::cerr << "Cutfreq: hay mas valores a eliminar que colores." << std::endl;
     return;

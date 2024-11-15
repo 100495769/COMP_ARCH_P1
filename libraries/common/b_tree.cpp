@@ -187,7 +187,7 @@ auto b_tree::_in_order_del_unfreq(std::unique_ptr<Nodo>* raiz, std::size_t &nume
       colores_eliminados.push_back(&(*raiz));
       std::cout << counter<< " Color eliminado:" << static_cast<int>((*raiz)->b) << static_cast<int>((*raiz)->g)  << static_cast<int>((*raiz)->r) << std::endl;
     }
-    else if ((*raiz)->cantidad_elementos == frecuencia_maxima+1 && numero_de_frecuencias != 0){
+    else if ((*raiz)->cantidad_elementos == frecuencia_maxima + 1 && numero_de_frecuencias > 0){
       numero_de_frecuencias--;
       colores_eliminados.push_back(&(*raiz));
 
@@ -218,7 +218,7 @@ std::vector<std::vector<std::uint8_t>> b_tree::lista_colores_eliminados(){
 }
 
 void b_tree::rellenar_datos(std::vector<uint8_t> * rojo, std::vector<uint8_t> * verde,
-                             std::vector<uint8_t> * azul, size_t &ancho, size_t &alto) {
+                             std::vector<uint8_t> * azul, size_t ancho, size_t alto) {
   lista_rojo = rojo;
   lista_verde = verde;
   lista_azul = azul;

@@ -50,7 +50,7 @@ class b_tree {
   public:
     // Esta funcion nos retorneara cuantas apariciones han habido de ese elemento en total.
     // Si es la primera vez que llega pues hay 1. La segunda: 2. Etc....
-    void rellenar_datos(std::vector<uint8_t> *rojo,std::vector<uint8_t> *verde, std::vector<uint8_t> *azul, size_t &ancho, size_t &alto);
+    void rellenar_datos(std::vector<uint8_t> *rojo,std::vector<uint8_t> *verde, std::vector<uint8_t> *azul, size_t ancho, size_t alto);
     std::uint8_t red_del, green_del, blue_del;
     auto insertar(std::uint8_t & r, std::uint8_t & g, std::uint8_t & b, size_t posicion_color) -> size_t;
     void in_order_del_unfreq(std::size_t numero_de_frecuencias, std::size_t frecuencia_maxima);
