@@ -72,6 +72,9 @@ class ImageAOS {
     [[nodiscard]] auto get_alto() const -> int { return alto; }
     [[nodiscard]] auto get_max_intensidad() const -> int { return max_intensidad; }
     [[nodiscard]] auto get_pixeles() const -> std::vector<pixel> { return vector_pixeles; }
+    [[nodiscard]] auto get_red(size_t index) const -> uint8_t { return vector_pixeles[index].red; }
+    [[nodiscard]] auto get_green(size_t index) const -> uint8_t { return vector_pixeles[index].green; }
+    [[nodiscard]] auto get_blue(size_t index) const -> uint8_t { return vector_pixeles[index].blue; }
 
     // Definimos los setters para los atributos privados
     void set_numero_magico(std::string const & numero_magico) { ImageAOS::numero_magico = numero_magico; }
