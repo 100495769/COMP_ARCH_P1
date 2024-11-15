@@ -6,20 +6,22 @@
 #include <algorithm>
 #include <bitset>
 //#include <cmake-build-debug/_deps/googletest-src/googletest/src/gtest-internal-inl.h>
+#include "b_tree.hpp"
+
+#include <chrono>
+#include <cmath>
 #include <complex>
 #include <cstdint>
 #include <fstream>
 #include <functional>
 #include <iostream>
+#include <progargs.hpp>
 #include <ranges>
 #include <sstream>
 #include <string>
 #include <tuple>
 #include <unordered_map>
 #include <vector>
-#include <cmath>
-#include "b_tree.hpp"
-#include <chrono>
 
 ImageSOA::ImageSOA() = default;
 
@@ -264,42 +266,6 @@ auto ImageSOA::compress() -> std::tuple<size_t, std::vector<std::string>> {
   return {numColoresUnicos, pixelIndices};
 }
 
-auto ImageSOA::tablaIndices(size_t num, std::unordered_map<std::string, std::string> coloresUnicos) -> std::unordered_map<std::string, std::string> {
-  if (num <= 255) {
-    for (auto const& color : coloresUnicos) {
-      //int indice = color.second;
-      unsigned long long indice = std::stoull(color.second);
-      std::string ind = std::bitset<8>(indice).to_string();
-      coloresUnicos[color.first] = ind;
-    }
-    return coloresUnicos;
-  }
-  else if (num > 255 && num < 65536) {
-    //necesitamos 2B para representar todos los indices
-    //return 16;
-    for (auto const& color : coloresUnicos) {
-      unsigned long long indice = std::stoull(color.second);
-      std::string ind =((std::bitset<16>(indice) >> 8) | (std::bitset<16>(indice) << 8)).to_string();
-      coloresUnicos[color.first] = ind;
-    }
-    return coloresUnicos;
-
-  }
-  else if (num < 4294967296) {
-    for (auto const& color : coloresUnicos) {
-      unsigned long long indice= std::stoull(color.second);
-      std::string ind =(std::bitset<32>(indice)>> 24 | std::bitset<32>(indice) << 8 |
-        std::bitset<32>(indice) <<8 | std::bitset<32>(indice) << 24 ).to_string();
-      coloresUnicos[color.first] = ind;
-    }
-    return coloresUnicos;
-  }
-  else {
-    std::cerr << "El número de colores en la imagen es demasiado grande para ser representados en la imagen comprimida. \n";
-    exit(1);  // salimos de la ejecucion si el numero de colores es demasiado grande
-  }
-
-}
 
 void ImageSOA::guardar_compress(const std::string& nombre_fichero, const std::tuple<size_t, std::vector<std::string>>& elem) const {
   std::ofstream archivo(nombre_fichero, std::ios::binary);

@@ -54,8 +54,8 @@ class ImageSOA {
   std::array<float, 3> interpolation(SurroundingColoursSOA& surrounding_colours, float x_original, float y_original);
 
   auto compress() -> std::tuple<size_t, std::vector<std::string>>;
-  auto tablaIndices(size_t num, std::unordered_map<std::string, std::string> coloresUnicos)
-      -> std::unordered_map<std::string, std::string>;
+  /*auto tablaIndices(size_t num, std::unordered_map<std::string, std::string> coloresUnicos)
+      -> std::unordered_map<std::string, std::string>;*/
   void guardar_compress(std::string const & nombre_fichero, const std::tuple<size_t, std::vector<std::string>>& elem) const ;
 
   // definimos getters para los atributos privados
